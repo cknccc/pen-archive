@@ -1,0 +1,3625 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="lavender-blue">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>만년필 &amp; 잉크 아카이브 — 관리 차트</title>
+
+  <!-- Pretendard (한글 UI 최적화) + Gowun Batang + Inter -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Pretendard Variable"', 'Pretendard', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['"Gowun Batang"', 'Georgia', 'serif'],
+            mono: ['Inter', '"Pretendard Variable"', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* =====================================================================
+       3가지 컬러 테마 CSS 커스텀 프로퍼티 정의
+       1) classic       : 기존 시안 (따뜻한 스테이셔너리 페이퍼/아이보리 + 브론즈)
+       2) lavender-blue : 연보라빛 옅은 파랑 (페리윙클/라벤더 블루, 기본 테마)
+       3) blue-black    : 블루블랙 (만년필 블루블랙 잉크 다크 네이비-슬레이트)
+       ===================================================================== */
+
+    :root,
+    [data-theme="lavender-blue"] {
+      --bg-page: #F2F3FB;
+      --bg-surface: #E7E9F8;
+      --bg-surface-soft: #F7F8FD;
+      --bg-card: #FFFFFF;
+      --bg-header: rgba(248, 249, 254, 0.94);
+      --border-header: #D6DAF0;
+      --text-header: #23284A;
+      --text-header-sub: #646D9E;
+      --logo-bg: #5A67B3;
+      --logo-text: #FFFFFF;
+
+      --header-btn-bg: #FFFFFF;
+      --header-btn-hover: #EAEBFF;
+      --header-btn-text: #353D73;
+      --header-btn-border: #CFD4F0;
+      --header-sec-bg: #E7E9F8;
+      --header-sec-hover: #DCE0F7;
+      --header-sec-text: #23284A;
+      --header-pri-bg: #5A67B3;
+      --header-pri-hover: #49559C;
+      --header-pri-text: #FFFFFF;
+
+      --switcher-bg: #E7E9F8;
+      --switcher-border: #D6DAF0;
+      --switcher-active-bg: #FFFFFF;
+      --switcher-active-text: #23284A;
+      --switcher-inactive-text: #596294;
+
+      --border-main: #D6DAF0;
+      --border-strong: #BCC3E6;
+      --text-primary: #23284A;
+      --text-secondary: #434B78;
+      --text-muted: #6C74A3;
+
+      --accent: #5A67B3;
+      --accent-hover: #49559C;
+      --accent-text: #FFFFFF;
+      --accent-secondary: #7682CC;
+      --accent-soft: #EAEBFF;
+      --accent-soft-text: #45519A;
+      --accent-soft-border: #CFD4F7;
+
+      --table-head-bg: #ECEEFF;
+      --row-hover: #F7F8FD;
+      --ring-focus: rgba(90, 103, 179, 0.25);
+      --shadow-card: 0 1px 3px rgba(35, 40, 74, 0.05), 0 6px 20px rgba(90, 103, 179, 0.06);
+      --shadow-modal: 0 22px 54px rgba(35, 40, 74, 0.20);
+      --scroll-thumb: #C5CAE8;
+      --scroll-thumb-hover: #9FA8DA;
+    }
+
+    [data-theme="classic"] {
+      --bg-page: #F7F5F0;
+      --bg-surface: #EFECE4;
+      --bg-surface-soft: #FAF8F4;
+      --bg-card: #FFFFFF;
+      --bg-header: rgba(252, 251, 248, 0.94);
+      --border-header: #E6E1D6;
+      --text-header: #2C2A29;
+      --text-header-sub: #7A7368;
+      --logo-bg: #2C2A29;
+      --logo-text: #FAF8F4;
+
+      --header-btn-bg: #FFFFFF;
+      --header-btn-hover: #F3EFE6;
+      --header-btn-text: #4A4640;
+      --header-btn-border: #DCD5C7;
+      --header-sec-bg: #EFECE4;
+      --header-sec-hover: #E5E0D5;
+      --header-sec-text: #2C2A29;
+      --header-pri-bg: #2C2A29;
+      --header-pri-hover: #43403E;
+      --header-pri-text: #FFFFFF;
+
+      --switcher-bg: #EFECE4;
+      --switcher-border: #E0D9CA;
+      --switcher-active-bg: #FFFFFF;
+      --switcher-active-text: #2C2A29;
+      --switcher-inactive-text: #6E675C;
+
+      --border-main: #E6E1D6;
+      --border-strong: #D4CCB9;
+      --text-primary: #2C2A29;
+      --text-secondary: #57524B;
+      --text-muted: #7D766B;
+
+      --accent: #2C2A29;
+      --accent-hover: #43403E;
+      --accent-text: #FFFFFF;
+      --accent-secondary: #8C6D46;
+      --accent-soft: #F3ECE1;
+      --accent-soft-text: #735634;
+      --accent-soft-border: #DFD2BE;
+
+      --table-head-bg: #F3F0E8;
+      --row-hover: #FAF8F4;
+      --ring-focus: rgba(140, 109, 70, 0.25);
+      --shadow-card: 0 1px 3px rgba(44, 42, 41, 0.04), 0 6px 18px rgba(44, 42, 41, 0.04);
+      --shadow-modal: 0 22px 54px rgba(44, 42, 41, 0.20);
+      --scroll-thumb: #D4CBBC;
+      --scroll-thumb-hover: #B8AD9B;
+    }
+
+    [data-theme="blue-black"] {
+      --bg-page: #EEF2F7;
+      --bg-surface: #E2E8F0;
+      --bg-surface-soft: #F6F8FB;
+      --bg-card: #FFFFFF;
+      --bg-header: #142238;
+      --border-header: #1F3454;
+      --text-header: #F8FAFC;
+      --text-header-sub: #94A3B8;
+      --logo-bg: #1E3A5F;
+      --logo-text: #F8FAFC;
+
+      --header-btn-bg: rgba(255, 255, 255, 0.08);
+      --header-btn-hover: rgba(255, 255, 255, 0.16);
+      --header-btn-text: #E2E8F0;
+      --header-btn-border: rgba(203, 213, 225, 0.22);
+      --header-sec-bg: #1E3A5F;
+      --header-sec-hover: #284B78;
+      --header-sec-text: #F1F5F9;
+      --header-pri-bg: #F8FAFC;
+      --header-pri-hover: #E2E8F0;
+      --header-pri-text: #142238;
+
+      --switcher-bg: rgba(15, 23, 42, 0.45);
+      --switcher-border: rgba(148, 163, 184, 0.24);
+      --switcher-active-bg: #F8FAFC;
+      --switcher-active-text: #142238;
+      --switcher-inactive-text: #CBD5E1;
+
+      --border-main: #CBD5E1;
+      --border-strong: #94A3B8;
+      --text-primary: #0F172A;
+      --text-secondary: #334E68;
+      --text-muted: #64748B;
+
+      --accent: #1E3A5F;
+      --accent-hover: #142238;
+      --accent-text: #FFFFFF;
+      --accent-secondary: #334E68;
+      --accent-soft: #E2E8F0;
+      --accent-soft-text: #1E3A5F;
+      --accent-soft-border: #CBD5E1;
+
+      --table-head-bg: #E6ECF4;
+      --row-hover: #F6F8FB;
+      --ring-focus: rgba(30, 58, 95, 0.25);
+      --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06), 0 6px 20px rgba(20, 34, 56, 0.06);
+      --shadow-modal: 0 22px 54px rgba(15, 23, 42, 0.30);
+      --scroll-thumb: #B6C3D4;
+      --scroll-thumb-hover: #8FA2BC;
+    }
+
+    /* 전역 베이스 스타일 */
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* 테마 연동 유틸리티 클래스 */
+    .th-header {
+      background-color: var(--bg-header);
+      border-color: var(--border-header);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .th-header-title { color: var(--text-header); }
+    .th-header-sub { color: var(--text-header-sub); }
+    .th-logo {
+      background-color: var(--logo-bg);
+      color: var(--logo-text);
+    }
+
+    .th-header-btn {
+      background-color: var(--header-btn-bg);
+      color: var(--header-btn-text);
+      border: 1px solid var(--header-btn-border);
+    }
+    .th-header-btn:hover { background-color: var(--header-btn-hover); }
+
+    .th-header-sec {
+      background-color: var(--header-sec-bg);
+      color: var(--header-sec-text);
+    }
+    .th-header-sec:hover { background-color: var(--header-sec-hover); }
+
+    .th-header-pri {
+      background-color: var(--header-pri-bg);
+      color: var(--header-pri-text);
+    }
+    .th-header-pri:hover { background-color: var(--header-pri-hover); }
+
+    .th-switcher {
+      background-color: var(--switcher-bg);
+      border: 1px solid var(--switcher-border);
+    }
+    .th-switcher-btn {
+      color: var(--switcher-inactive-text);
+    }
+    .th-switcher-btn.active {
+      background-color: var(--switcher-active-bg);
+      color: var(--switcher-active-text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .th-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-main);
+      box-shadow: var(--shadow-card);
+      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .th-surface {
+      background-color: var(--bg-surface);
+      border-color: var(--border-main);
+    }
+    .th-surface-soft {
+      background-color: var(--bg-surface-soft);
+      border-color: var(--border-main);
+    }
+    .th-border { border-color: var(--border-main); }
+    .th-text { color: var(--text-primary); }
+    .th-text-sec { color: var(--text-secondary); }
+    .th-text-muted { color: var(--text-muted); }
+    .th-accent-text { color: var(--accent); }
+    .th-accent-sec-text { color: var(--accent-secondary); }
+
+    .th-btn-primary {
+      background-color: var(--accent);
+      color: var(--accent-text);
+    }
+    .th-btn-primary:hover { background-color: var(--accent-hover); }
+
+    .th-btn-soft {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+    }
+    .th-btn-soft:hover { filter: brightness(0.96); }
+
+    .th-badge-soft {
+      background-color: var(--accent-soft);
+      color: var(--accent-soft-text);
+      border: 1px solid var(--accent-soft-border);
+    }
+
+    /* =====================================================================
+       한정판 전용 버튼 스타일 (네이비/블루블랙 바탕 + 황금색 글씨 & 테두리)
+       ===================================================================== */
+    .btn-limited-edition {
+      background: linear-gradient(135deg, #142238 0%, #1B304F 100%);
+      color: #F4D06F;
+      border: 1px solid rgba(244, 208, 111, 0.65);
+      box-shadow: 0 1px 4px rgba(20, 34, 56, 0.24), inset 0 1px 0 rgba(255, 241, 184, 0.16);
+      letter-spacing: 0.04em;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+    .btn-limited-edition:hover {
+      filter: brightness(1.12);
+      box-shadow: 0 3px 10px rgba(20, 34, 56, 0.32), 0 0 0 2px rgba(244, 208, 111, 0.28);
+      transform: translateY(-0.5px);
+    }
+    .btn-limited-edition:active {
+      transform: translateY(0);
+    }
+
+    /* 골드닙 / 스틸닙 전용 닙 배지 스타일 */
+    .nib-badge-gold {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FDF0C7 100%);
+      color: #8A6114;
+      border: 1px solid #E5C169;
+    }
+    .nib-badge-steel {
+      background-color: #F1F5F9;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+    }
+
+    .th-input {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+    }
+    .th-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring-focus);
+    }
+    .th-input-soft {
+      background-color: var(--bg-surface-soft);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+    }
+    .th-input-soft:focus {
+      outline: none;
+      background-color: var(--bg-card);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--ring-focus);
+    }
+
+    .th-thead {
+      background-color: var(--table-head-bg);
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-main);
+    }
+    .th-row {
+      border-bottom: 1px solid var(--border-main);
+      transition: background-color 0.15s ease;
+    }
+    .th-row:last-child { border-bottom: none; }
+    .th-row:hover { background-color: var(--row-hover); }
+
+    .th-modal {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-main);
+      box-shadow: var(--shadow-modal);
+    }
+
+    /* 탭 버튼 */
+    .th-tab {
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+    }
+    .th-tab:hover { color: var(--text-primary); }
+    .th-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 700;
+    }
+    .th-tab-badge {
+      background-color: var(--bg-surface);
+      color: var(--text-secondary);
+    }
+    .th-tab.active .th-tab-badge {
+      background-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    /* 필터 필 버튼 */
+    .th-pill {
+      background-color: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+    }
+    .th-pill:hover { border-color: var(--border-strong); }
+    .th-pill.active {
+      background-color: var(--accent);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    /* 세그먼트 폼 선택 버튼 */
+    .th-opt {
+      background-color: var(--bg-surface-soft);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+    }
+    .th-opt:hover { background-color: var(--bg-surface); }
+    .th-opt.active {
+      background-color: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* 스크롤바 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-page); }
+    ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
+
+    /* 미세 펄스 (세척필요 배지) */
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.72; }
+    }
+    .badge-cleaning { animation: subtlePulse 2.3s ease-in-out infinite; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast-enter { animation: toastIn 0.22s ease-out forwards; }
+
+    /* 컬러 피커 정리 */
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch {
+      border: 1px solid rgba(15, 23, 42, 0.18);
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans">
+
+  <!-- ========================================================= -->
+  <!-- 상단 헤더 (브랜드 + 3가지 테마 시안 비교 스위처 + 빠른 등록) -->
+  <!-- ========================================================= -->
+  <header class="sticky top-0 z-30 th-header backdrop-blur-md border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- 브랜드 -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-xl th-logo flex items-center justify-center shrink-0 shadow-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+            <path d="M2 2l7.586 7.586"/>
+            <circle cx="11" cy="11" r="2"/>
+          </svg>
+        </div>
+        <div class="truncate">
+          <h1 class="font-serif text-base sm:text-lg font-bold tracking-tight th-header-title truncate">
+            만년필 &amp; 잉크 아카이브
+          </h1>
+          <p class="hidden sm:block text-[10px] th-header-sub tracking-widest uppercase">
+            Fountain Pen &amp; Ink Collection Log
+          </p>
+        </div>
+      </div>
+
+      <!-- 3가지 컬러 테마 시안 비교 전환기 -->
+      <div class="order-3 lg:order-2 w-full lg:w-auto flex items-center justify-center">
+        <div class="th-switcher inline-flex items-center p-1 rounded-xl gap-1 w-full sm:w-auto justify-between sm:justify-start" role="group" aria-label="컬러 테마 시안 선택">
+          <span class="hidden xl:inline text-[11px] font-medium px-2 th-header-sub select-none">테마 시안</span>
+
+          <button type="button" data-theme-btn="classic" onclick="setTheme('classic')" class="th-switcher-btn flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition whitespace-nowrap">
+            <span class="flex -space-x-1 shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background:#F7F5F0;"></span>
+              <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background:#8C6D46;"></span>
+            </span>
+            <span>기존(클래식)</span>
+          </button>
+
+          <button type="button" data-theme-btn="lavender-blue" onclick="setTheme('lavender-blue')" class="th-switcher-btn active flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition whitespace-nowrap">
+            <span class="flex -space-x-1 shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background:#EAEBFF;"></span>
+              <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background:#5A67B3;"></span>
+            </span>
+            <span>연보라빛 파랑</span>
+          </button>
+
+          <button type="button" data-theme-btn="blue-black" onclick="setTheme('blue-black')" class="th-switcher-btn flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition whitespace-nowrap">
+            <span class="flex -space-x-1 shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full border border-white/30" style="background:#142238;"></span>
+              <span class="w-2.5 h-2.5 rounded-full border border-white/30" style="background:#334E68;"></span>
+            </span>
+            <span>블루블랙</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 우측 액션 버튼 -->
+      <div class="order-2 lg:order-3 flex items-center gap-1.5 sm:gap-2">
+        <!-- 데이터 관리 드롭다운 -->
+        <div class="relative" id="dataMenuWrapper">
+          <button type="button" onclick="toggleDataMenu()" class="th-header-btn inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium rounded-xl transition" title="백업 및 데이터 관리">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+            </svg>
+            <span class="hidden sm:inline">데이터</span>
+          </button>
+          <div id="dataMenuDropdown" class="hidden absolute right-0 mt-2 w-48 th-modal rounded-xl py-1.5 z-40">
+            <button type="button" onclick="exportJSON(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs th-text hover:opacity-80 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 th-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              JSON 백업 내보내기
+            </button>
+            <button type="button" onclick="document.getElementById('importFileInput').click(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs th-text hover:opacity-80 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 th-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              JSON 파일 불러오기
+            </button>
+            <div class="my-1 border-t th-border"></div>
+            <button type="button" onclick="confirmResetSample(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs text-amber-700 hover:bg-amber-50 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              초기 샘플 복원
+            </button>
+          </div>
+          <input type="file" id="importFileInput" accept=".json,application/json" class="hidden" onchange="importJSON(event)" />
+        </div>
+
+        <button type="button" onclick="openInkModal()" class="th-header-sec inline-flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-semibold rounded-xl transition whitespace-nowrap">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>잉크</span>
+        </button>
+
+        <button type="button" onclick="openPenModal()" class="th-header-pri inline-flex items-center gap-1 px-3 sm:px-3.5 py-2 text-xs font-semibold rounded-xl shadow-sm transition whitespace-nowrap">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>만년필</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+    <!-- 1. 상단 대시보드 (요약 카드 4종) -->
+    <section aria-label="컬렉션 요약 대시보드" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- 카드 1: 보유 컬렉션 -->
+      <div class="th-card rounded-2xl p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold th-text-muted">보유 컬렉션</span>
+          <span class="w-8 h-8 rounded-xl th-badge-soft flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          </span>
+        </div>
+        <div class="mt-3 flex items-baseline gap-4">
+          <div>
+            <span class="text-2xl font-bold th-text tracking-tight" id="statPenCount">0</span>
+            <span class="text-xs th-text-muted ml-1">자루 (펜)</span>
+          </div>
+          <div class="h-5 w-px th-surface"></div>
+          <div>
+            <span class="text-2xl font-bold th-text tracking-tight" id="statInkCount">0</span>
+            <span class="text-xs th-text-muted ml-1">병 (잉크)</span>
+          </div>
+        </div>
+        <p class="mt-2.5 text-[11px] th-text-muted" id="statPenBreakdownSub">골드닙 0 · 스틸닙 0 · 한정판 0</p>
+      </div>
+
+      <!-- 카드 2: 총 구입가 & 할부 현황 -->
+      <div class="th-card rounded-2xl p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold th-text-muted">총 구입가 합계</span>
+          <span class="w-8 h-8 rounded-xl th-badge-soft flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </span>
+        </div>
+        <div class="mt-3">
+          <span class="text-2xl font-bold th-text tracking-tight font-mono" id="statTotalSpent">₩0</span>
+        </div>
+        <div class="mt-2 space-y-1">
+          <div class="text-[11px] th-text-muted" id="statSpentBreakdown">펜 ₩0 · 잉크 ₩0</div>
+          <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span id="statOngoingMonthlyBadge" class="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/80 font-semibold">월 할부 ₩0</span>
+            <span id="statCompletedInstBadge" class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-medium">할부 끝 0건</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 카드 3: 현재 잉입 중 -->
+      <div class="th-card rounded-2xl p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold th-text-muted">현재 잉입 중</span>
+          <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/70 flex items-center justify-center">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+          </span>
+        </div>
+        <div class="mt-3 flex items-baseline gap-2">
+          <span class="text-2xl font-bold th-text tracking-tight" id="statInkedCount">0</span>
+          <span class="text-xs th-text-muted">자루 잉입됨</span>
+        </div>
+        <p class="mt-2.5 text-[11px] th-text-muted" id="statActiveStatusSub">사용중 0자루 · 보관중 0자루 · 잘안씀 0자루</p>
+      </div>
+
+      <!-- 카드 4: 세척필요 알림 (클릭 시 바로 필터링) -->
+      <button type="button" onclick="filterByCleaningNeeded()" id="statCleaningCard" class="text-left th-card hover:border-red-300 rounded-2xl p-5 transition flex flex-col justify-between group focus:outline-none">
+        <div class="flex items-center justify-between w-full">
+          <span class="text-xs font-bold text-red-700 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-red-500" id="cleaningDot"></span>
+            세척필요 알림
+          </span>
+          <span class="w-8 h-8 rounded-xl bg-red-50 text-red-600 border border-red-200/70 flex items-center justify-center group-hover:bg-red-100 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </span>
+        </div>
+        <div class="mt-3 flex items-baseline gap-2">
+          <span class="text-2xl font-bold text-red-600 tracking-tight" id="statCleaningCount">0</span>
+          <span class="text-xs th-text-muted">자루 (잉입 2개월 경과)</span>
+        </div>
+        <p class="mt-2.5 text-[11px] text-red-700/90 font-semibold flex items-center gap-1">
+          <span>클릭하여 세척필요 펜만 모아보기</span>
+          <svg class="w-3 h-3 transform group-hover:translate-x-0.5 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+        </p>
+      </button>
+    </section>
+
+    <!-- 2. 메인 탭 네비게이션 -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b th-border">
+      <nav class="flex items-center gap-1 overflow-x-auto" role="tablist">
+        <button type="button" onclick="switchTab('pens')" id="tabBtn-pens" role="tab" class="th-tab active px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
+          <span>만년필 차트</span>
+          <span id="tabBadge-pens" class="th-tab-badge px-1.5 py-0.5 text-[11px] rounded-full font-mono">0</span>
+        </button>
+        <button type="button" onclick="switchTab('inks')" id="tabBtn-inks" role="tab" class="th-tab px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
+          <span>잉크 라이브러리</span>
+          <span id="tabBadge-inks" class="th-tab-badge px-1.5 py-0.5 text-[11px] rounded-full font-mono">0</span>
+        </button>
+        <button type="button" onclick="switchTab('finance')" id="tabBtn-finance" role="tab" class="th-tab px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
+          <span>할부 · 지출 요약</span>
+          <span id="tabBadge-finance" class="th-tab-badge px-1.5 py-0.5 text-[11px] rounded-full font-mono">0</span>
+        </button>
+      </nav>
+      <div class="text-[11px] th-text-muted pb-2 sm:pb-0 flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>자동 저장됨</span>
+        <span class="opacity-40">|</span>
+        <span id="todayDateLabel" class="font-mono"></span>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: 만년필 차트 -->
+    <!-- ========================================================= -->
+    <section id="tabPanel-pens" class="space-y-4">
+      <!-- 검색 / 상태 필터 / 할부 필터 / 정렬 바 -->
+      <div class="th-card rounded-2xl p-4 space-y-3">
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+          <!-- 상태 & 세척필요 & 한정판 필터 -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" data-filter="all" onclick="setPenFilter('all')" class="pen-filter-btn th-pill active px-3 py-1.5 rounded-xl text-xs transition">전체</button>
+            <button type="button" data-filter="사용중" onclick="setPenFilter('사용중')" class="pen-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">사용중</button>
+            <button type="button" data-filter="보관중" onclick="setPenFilter('보관중')" class="pen-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">보관중</button>
+            <button type="button" data-filter="잘안씀" onclick="setPenFilter('잘안씀')" class="pen-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">잘안씀</button>
+            <button type="button" data-filter="limited" onclick="setPenFilter('limited')" class="pen-filter-btn btn-limited-edition px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
+              <span>한정</span>
+              <span id="filterLimitedCount" class="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-[#F4D06F]/20 text-[#F4D06F]">0</span>
+            </button>
+            <button type="button" data-filter="cleaning" onclick="setPenFilter('cleaning')" class="pen-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200/80 hover:bg-red-100 transition flex items-center gap-1.5">
+              <span>세척필요</span>
+              <span id="filterCleaningCount" class="px-1.5 py-0.2 bg-red-600 text-white rounded-full text-[10px] font-mono">0</span>
+            </button>
+          </div>
+
+          <!-- 검색 & 할부 필터 & 정렬 -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1 sm:w-60">
+              <svg class="w-4 h-4 th-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="penSearchInput" oninput="renderPens()" placeholder="펜, 닙(14k), 구매처, 잉크, 비고 검색..." class="th-input-soft w-full pl-9 pr-3 py-2 text-xs rounded-xl" />
+            </div>
+
+            <select id="penInstFilterSelect" onchange="renderPens()" class="th-input-soft px-3 py-2 text-xs rounded-xl">
+              <option value="all">결제: 전체</option>
+              <option value="ongoing">할부 진행중</option>
+              <option value="completed">할부 끝 (완납)</option>
+              <option value="lump">일시불</option>
+            </select>
+
+            <select id="penSortSelect" onchange="renderPens()" class="th-input-soft px-3 py-2 text-xs rounded-xl">
+              <option value="cleaningFirst">세척필요 우선</option>
+              <option value="dateDesc">구입일 최신순</option>
+              <option value="dateAsc">구입일 오래된순</option>
+              <option value="priceDesc">구입가 높은순</option>
+              <option value="priceAsc">구입가 낮은순</option>
+              <option value="inkDateAsc">잉입일 오래된순</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 데스크톱 테이블 뷰 -->
+      <div class="hidden md:block th-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="th-thead text-[11px] font-semibold uppercase tracking-wider">
+                <th class="py-3.5 px-4">만년필 / 색상 / 비고</th>
+                <th class="py-3.5 px-3 text-center">닙 스펙</th>
+                <th class="py-3.5 px-4">구입일 / 구입가 / 구매처</th>
+                <th class="py-3.5 px-3">구성품 (보증서·케이스)</th>
+                <th class="py-3.5 px-3 text-center">상태</th>
+                <th class="py-3.5 px-4">잉크 인입 상태</th>
+                <th class="py-3.5 px-4 text-right">관리</th>
+              </tr>
+            </thead>
+            <tbody id="penTableBody" class="text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 모바일 카드 뷰 -->
+      <div id="penMobileList" class="md:hidden space-y-3"></div>
+
+      <!-- 빈 상태 -->
+      <div id="penEmptyState" class="hidden th-card rounded-2xl p-10 text-center">
+        <p class="text-sm font-semibold th-text">조건에 해당하는 만년필이 없습니다.</p>
+        <p class="text-xs th-text-muted mt-1">검색어나 필터를 초기화하거나 새 만년필을 등록해 보세요.</p>
+        <button type="button" onclick="resetPenFilters()" class="mt-4 px-4 py-2 text-xs font-semibold th-btn-soft rounded-xl transition">필터 초기화</button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: 잉크 라이브러리 -->
+    <!-- ========================================================= -->
+    <section id="tabPanel-inks" class="hidden space-y-4">
+      <div class="th-card rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button type="button" data-filter="all" onclick="setInkFilter('all')" class="ink-filter-btn th-pill active px-3 py-1.5 rounded-xl text-xs transition">전체</button>
+          <button type="button" data-filter="사용중" onclick="setInkFilter('사용중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">사용중</button>
+          <button type="button" data-filter="보관중" onclick="setInkFilter('보관중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">보관중</button>
+          <button type="button" data-filter="잘안씀" onclick="setInkFilter('잘안씀')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">잘안씀</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1 md:w-64">
+            <svg class="w-4 h-4 th-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="inkSearchInput" oninput="renderInks()" placeholder="제조사, 잉크명, 색상, 구매처, HEX 검색..." class="th-input-soft w-full pl-9 pr-3 py-2 text-xs rounded-xl" />
+          </div>
+
+          <div class="inline-flex th-surface p-1 rounded-xl border shrink-0">
+            <button type="button" id="inkViewBtn-card" onclick="setInkView('card')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              <span class="hidden sm:inline">카드</span>
+            </button>
+            <button type="button" id="inkViewBtn-table" onclick="setInkView('table')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              <span class="hidden sm:inline">테이블</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 스와치 카드 그리드 -->
+      <div id="inkCardGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+      <!-- 테이블 뷰 -->
+      <div id="inkTableWrapper" class="hidden th-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="th-thead text-[11px] font-semibold uppercase tracking-wider">
+                <th class="py-3.5 px-4">색상 스와치 / HEX</th>
+                <th class="py-3.5 px-4">제조사 / 잉크명</th>
+                <th class="py-3.5 px-4">구입일 / 구입가 / 구매처</th>
+                <th class="py-3.5 px-3 text-center">상태</th>
+                <th class="py-3.5 px-4">현재 잉입 펜</th>
+                <th class="py-3.5 px-4 text-right">관리</th>
+              </tr>
+            </thead>
+            <tbody id="inkTableBody" class="text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 빈 상태 -->
+      <div id="inkEmptyState" class="hidden th-card rounded-2xl p-10 text-center">
+        <p class="text-sm font-semibold th-text">조건에 해당하는 잉크가 없습니다.</p>
+        <p class="text-xs th-text-muted mt-1">새 잉크를 등록하고 AI 색코드 조회로 실제 컬러 스와치를 만들어 보세요.</p>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: 할부 · 지출 요약 -->
+    <!-- ========================================================= -->
+    <section id="tabPanel-finance" class="hidden space-y-6">
+      <!-- 할부 요약 카드 4개 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="th-card rounded-2xl p-5">
+          <p class="text-xs font-semibold th-text-muted">이번 달 예상 할부 납입금</p>
+          <p class="text-2xl font-bold text-amber-700 font-mono mt-2" id="finMonthlyPayment">₩0</p>
+          <p class="text-[11px] th-text-muted mt-1.5">진행 중인 할부만 합산 (할부 끝 제외)</p>
+        </div>
+        <div class="th-card rounded-2xl p-5">
+          <p class="text-xs font-semibold th-text-muted">진행 중인 할부</p>
+          <p class="text-2xl font-bold th-text mt-2" id="finOngoingCount">0건</p>
+          <p class="text-[11px] th-text-muted mt-1.5 font-mono" id="finOngoingAmount">진행중 원금 합계 ₩0</p>
+        </div>
+        <div class="th-card rounded-2xl p-5">
+          <p class="text-xs font-semibold th-text-muted">할부 끝 (완납 완료)</p>
+          <p class="text-2xl font-bold text-emerald-700 mt-2" id="finCompletedCount">0건</p>
+          <p class="text-[11px] th-text-muted mt-1.5 font-mono" id="finCompletedAmount">완납 원금 합계 ₩0</p>
+        </div>
+        <div class="th-card rounded-2xl p-5">
+          <p class="text-xs font-semibold th-text-muted">일시불 / 할부 비중</p>
+          <p class="text-xl font-bold th-text mt-2 font-mono" id="finPaymentRatio">0% / 0%</p>
+          <div class="w-full h-2 th-surface rounded-full overflow-hidden mt-3 flex">
+            <div id="finLumpBar" class="h-full transition-all" style="width: 100%; background-color: var(--accent);"></div>
+            <div id="finInstBar" class="bg-amber-500 h-full transition-all" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 할부 결제 내역 (진행중 / 할부끝 필터 포함) -->
+      <div class="th-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b th-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold th-text">할부 결제 내역</h2>
+            <p class="text-xs th-text-muted mt-0.5">구입일로부터 할부 개월 경과 시 자동으로 <strong class="text-emerald-700">할부 끝</strong> 표기되며 월 납입금에서 제외됩니다.</p>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" data-fin-filter="all" onclick="setFinanceFilter('all')" class="fin-filter-btn th-pill active px-3 py-1.5 rounded-xl text-xs transition">전체</button>
+            <button type="button" data-fin-filter="ongoing" onclick="setFinanceFilter('ongoing')" class="fin-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">진행중</button>
+            <button type="button" data-fin-filter="completed" onclick="setFinanceFilter('completed')" class="fin-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">할부 끝</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="th-thead text-[11px] font-semibold uppercase tracking-wider">
+                <th class="py-3 px-4">구분</th>
+                <th class="py-3 px-4">제품명</th>
+                <th class="py-3 px-4">할부 상태 / 카드사</th>
+                <th class="py-3 px-4">구입일 (종료 예정)</th>
+                <th class="py-3 px-4 text-right">총 구입가</th>
+                <th class="py-3 px-4 text-right">월 납입금</th>
+              </tr>
+            </thead>
+            <tbody id="installmentTableBody" class="text-sm"></tbody>
+          </table>
+        </div>
+        <div id="installmentEmptyState" class="hidden p-8 text-center text-xs th-text-muted">
+          해당 조건의 할부 항목이 없습니다.
+        </div>
+      </div>
+
+      <!-- 제조사별 보유 현황 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="th-card rounded-2xl p-5">
+          <h3 class="text-sm font-bold th-text mb-1">만년필 제조사별 보유 현황</h3>
+          <p class="text-xs th-text-muted mb-4">브랜드별 자루 수 및 누적 구입 금액</p>
+          <div id="penBrandStats" class="space-y-3"></div>
+        </div>
+        <div class="th-card rounded-2xl p-5">
+          <h3 class="text-sm font-bold th-text mb-1">잉크 제조사별 보유 현황</h3>
+          <p class="text-xs th-text-muted mb-4">브랜드별 병 수 및 누적 구입 금액</p>
+          <div id="inkBrandStats" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 1: 만년필 등록 / 수정 모달 -->
+  <!-- ========================================================= -->
+  <div id="penModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="th-modal rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b th-border th-surface-soft flex items-center justify-between">
+        <div>
+          <h2 id="penModalTitle" class="font-serif text-lg font-bold th-text">만년필 등록</h2>
+          <p class="text-[11px] th-text-muted">닙 재질(스틸/골드 K 자동 리서치), 구매처, 보증서·케이스, 한정판 및 비고를 기록하세요.</p>
+        </div>
+        <button type="button" onclick="closePenModal()" class="p-2 rounded-xl th-text-muted hover:opacity-75 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="penForm" onsubmit="savePen(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
+        <input type="hidden" id="penId" />
+
+        <!-- 제조사 & 펜 이름 + 한정판 체크 -->
+        <div class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">제조사 <span class="text-red-500">*</span></label>
+              <input type="text" id="penBrand" required placeholder="예: Pilot, Sailor, Pelikan, LAMY" class="th-input-soft w-full px-3.5 py-2.5 text-sm rounded-xl" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">펜 이름 <span class="text-red-500">*</span></label>
+              <input type="text" id="penName" required placeholder="예: 커스텀 823, 프로기어 슬림" class="th-input-soft w-full px-3.5 py-2.5 text-sm rounded-xl" />
+            </div>
+          </div>
+
+          <!-- 한정판 체크 박스 (체크 시 네이비 바탕 황금색 '한정' 버튼 미리보기) -->
+          <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-xl th-surface-soft border th-border">
+            <label for="penIsLimited" class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="penIsLimited" onchange="updateLimitedPreview()" class="w-4 h-4 rounded accent-[#142238] cursor-pointer" />
+              <span class="text-xs font-semibold th-text">한정판 (Limited / Special Edition)</span>
+            </label>
+            <div id="limitedPreviewWrap" class="hidden items-center gap-2">
+              <span class="text-[11px] th-text-muted">표기 미리보기:</span>
+              <span class="btn-limited-edition inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold">한정</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 닙 재질 (스틸닙 / 골드닙 + AI K 자동 리서치) & 닙 사이즈 -->
+        <div class="p-4 th-surface-soft border th-border rounded-2xl space-y-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="text-xs font-bold th-text">닙 재질 &amp; 사이즈 <span class="text-red-500">*</span></span>
+              <p class="text-[11px] th-text-muted">예시 표기: <span id="nibFormatPreview" class="font-semibold th-accent-text">스틸 F닙</span></p>
+            </div>
+            <!-- 스틸닙 / 골드닙 선택 -->
+            <div class="inline-flex th-surface p-1 rounded-xl border th-border">
+              <button type="button" onclick="selectNibMaterial('steel')" id="nibMatSteelBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition">스틸닙</button>
+              <button type="button" onclick="selectNibMaterial('gold')" id="nibMatGoldBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition">골드닙 (금)</button>
+            </div>
+          </div>
+
+          <!-- 골드닙 선택 시 몇K 입력 및 AI 자동 리서치 -->
+          <div id="goldKaratFields" class="hidden pt-2.5 border-t th-border space-y-2.5">
+            <div class="flex flex-col sm:flex-row sm:items-end gap-2.5">
+              <div class="flex-1">
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">골드닙 금 함량 (K)</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="text" id="penNibKarat" oninput="updateNibFormatPreview()" placeholder="예: 14k, 18k, 21k" class="th-input w-full px-3 py-2 text-xs font-mono rounded-xl" />
+                  <button type="button" onclick="setQuickKarat('14k')" class="px-2.5 py-2 rounded-xl text-[11px] font-mono font-semibold th-opt shrink-0">14k</button>
+                  <button type="button" onclick="setQuickKarat('18k')" class="px-2.5 py-2 rounded-xl text-[11px] font-mono font-semibold th-opt shrink-0">18k</button>
+                  <button type="button" onclick="setQuickKarat('21k')" class="px-2.5 py-2 rounded-xl text-[11px] font-mono font-semibold th-opt shrink-0">21k</button>
+                </div>
+              </div>
+              <button type="button" id="aiKaratBtn" onclick="lookupGoldKaratAI()" class="th-btn-primary inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold disabled:opacity-60 rounded-xl shadow-xs transition whitespace-nowrap">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg>
+                <span id="aiKaratBtnText">AI 몇K 자동 조회</span>
+              </button>
+            </div>
+            <p id="aiKaratStatus" class="hidden text-[11px] th-accent-text font-medium"></p>
+          </div>
+
+          <!-- 닙 사이즈 선택 -->
+          <div class="pt-1">
+            <label class="block text-[11px] font-semibold th-text-muted mb-1.5">닙 굵기 (사이즈)</label>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="selectNib('EF')" data-nib="EF" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">EF</button>
+              <button type="button" onclick="selectNib('F')" data-nib="F" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">F</button>
+              <button type="button" onclick="selectNib('M')" data-nib="M" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">M</button>
+              <button type="button" onclick="selectNib('B')" data-nib="B" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">B</button>
+              <button type="button" onclick="selectNib('1.1')" data-nib="1.1" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">1.1</button>
+              <button type="button" onclick="selectNib('custom')" data-nib="custom" class="nib-btn th-opt px-3.5 py-2 rounded-xl text-xs transition">직접입력</button>
+            </div>
+            <div id="customNibWrapper" class="hidden mt-2.5">
+              <input type="text" id="penCustomNib" oninput="updateNibFormatPreview()" placeholder="커스텀 닙 입력 (예: FA, 포스팅(PO), MF, Zoom, Music)" class="th-input w-full px-3.5 py-2 text-xs rounded-xl" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 펜 색상 & 상태 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold th-text-sec mb-1.5">펜 색상</label>
+            <div class="flex items-center gap-2">
+              <input type="color" id="penColorHex" value="#2B3440" class="w-10 h-10 rounded-xl cursor-pointer shrink-0" title="펜 색상 도트 선택" />
+              <input type="text" id="penColorName" placeholder="예: 스모크 블랙, 아이보리 골드" class="th-input-soft w-full px-3.5 py-2.5 text-sm rounded-xl" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold th-text-sec mb-1.5">상태</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" onclick="selectPenStatus('사용중')" data-status="사용중" class="pen-status-btn th-opt py-2.5 rounded-xl text-xs transition">사용중</button>
+              <button type="button" onclick="selectPenStatus('보관중')" data-status="보관중" class="pen-status-btn th-opt py-2.5 rounded-xl text-xs transition">보관중</button>
+              <button type="button" onclick="selectPenStatus('잘안씀')" data-status="잘안씀" class="pen-status-btn th-opt py-2.5 rounded-xl text-xs transition">잘안씀</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 구입일 / 구입가 / 구매처 / 일시불·할부 -->
+        <div class="p-4 th-surface-soft border th-border rounded-2xl space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구입일</label>
+              <input type="date" id="penPurchaseDate" oninput="updatePenInstallmentPreview()" class="th-input w-full px-3 py-2 text-sm rounded-xl" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구입가 (원)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs th-text-muted">₩</span>
+                <input type="text" id="penPrice" inputmode="numeric" oninput="formatPriceInput(this)" placeholder="0" class="th-input w-full pl-7 pr-3 py-2 text-sm rounded-xl text-right font-mono" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구매처 (직접입력)</label>
+              <input type="text" id="penPurchasePlace" placeholder="예: 베스트펜, 직구, 중고" class="th-input w-full px-3 py-2 text-sm rounded-xl" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <span class="text-xs font-semibold th-text-sec">결제 방식</span>
+            <div class="inline-flex th-surface p-1 rounded-xl">
+              <button type="button" onclick="setPenPaymentType('lump')" id="penPayLumpBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition">일시불</button>
+              <button type="button" onclick="setPenPaymentType('installment')" id="penPayInstBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition">할부</button>
+            </div>
+          </div>
+
+          <!-- 할부 세부 입력 -->
+          <div id="penInstallmentFields" class="hidden space-y-3 pt-2 border-t th-border">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">할부 개월수</label>
+                <div class="relative">
+                  <input type="number" id="penInstMonths" min="2" max="60" oninput="updatePenInstallmentPreview()" placeholder="예: 6" class="th-input w-full px-3.5 py-2 pr-12 text-sm rounded-xl" />
+                  <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs th-text-muted">개월</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">결제 카드사</label>
+                <input type="text" id="penInstCard" list="cardCompanyList" placeholder="예: 현대카드, 삼성카드" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+              </div>
+            </div>
+            <!-- 할부 상태 실시간 미리보기 -->
+            <div id="penInstPreview" class="hidden px-3 py-2 rounded-xl text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- 보증서 유무 & 케이스 유무 (빠른 선택 + 직접입력란) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-3.5 th-surface-soft border th-border rounded-2xl space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <label for="penWarranty" class="text-xs font-semibold th-text-sec">보증서 유무</label>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="setQuickField('penWarranty', '있음')" class="px-2 py-0.5 rounded-md text-[11px] font-semibold th-opt">있음</button>
+                <button type="button" onclick="setQuickField('penWarranty', '없음')" class="px-2 py-0.5 rounded-md text-[11px] font-semibold th-opt">없음</button>
+              </div>
+            </div>
+            <input type="text" id="penWarranty" placeholder="직접입력 (예: 있음 / 도장 O / 없음)" class="th-input w-full px-3 py-2 text-xs rounded-xl" />
+          </div>
+
+          <div class="p-3.5 th-surface-soft border th-border rounded-2xl space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <label for="penCaseInfo" class="text-xs font-semibold th-text-sec">케이스 유무</label>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="setQuickField('penCaseInfo', '있음')" class="px-2 py-0.5 rounded-md text-[11px] font-semibold th-opt">있음</button>
+                <button type="button" onclick="setQuickField('penCaseInfo', '없음')" class="px-2 py-0.5 rounded-md text-[11px] font-semibold th-opt">없음</button>
+              </div>
+            </div>
+            <input type="text" id="penCaseInfo" placeholder="직접입력 (예: 있음 / 풀박스 / 단품)" class="th-input w-full px-3 py-2 text-xs rounded-xl" />
+          </div>
+        </div>
+
+        <!-- 잉크 인입 상태 -->
+        <div class="p-4 th-surface-soft border th-border rounded-2xl space-y-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="text-xs font-bold th-text">잉크 인입 상태</span>
+              <p class="text-[11px] th-text-muted">잉입일로부터 달력상 2개월 경과 시 자동으로 [세척필요]가 표기됩니다.</p>
+            </div>
+            <div class="inline-flex th-surface p-1 rounded-xl">
+              <button type="button" onclick="setPenInked(false)" id="penInkedNoBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition">미잉입</button>
+              <button type="button" onclick="setPenInked(true)" id="penInkedYesBtn" class="px-3 py-1.5 rounded-lg text-xs font-medium th-text-muted transition">잉입 중</button>
+            </div>
+          </div>
+
+          <div id="penInkedFields" class="hidden space-y-3 pt-2 border-t th-border">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div class="flex-1">
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">잉입일 (YYYY-MM-DD)</label>
+                <div class="flex items-center gap-2">
+                  <input type="date" id="penInkedDate" onchange="updatePenCleaningPreview()" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+                  <button type="button" onclick="setInkedDateToday()" class="px-3 py-2 text-xs font-semibold th-btn-soft rounded-xl whitespace-nowrap transition">오늘</button>
+                </div>
+              </div>
+              <button type="button" onclick="openInkPickerModal()" class="th-btn-primary inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-xl shadow-xs transition whitespace-nowrap">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                <span>잉크 불러오기</span>
+              </button>
+            </div>
+
+            <div id="penCleaningPreview" class="hidden px-3.5 py-2 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span id="penCleaningPreviewText"></span>
+            </div>
+
+            <input type="hidden" id="penLinkedInkId" />
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+              <div class="sm:col-span-5">
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">잉크 회사</label>
+                <input type="text" id="penInkBrand" placeholder="예: Pilot Iroshizuku" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+              </div>
+              <div class="sm:col-span-5">
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">잉크명</label>
+                <input type="text" id="penInkName" placeholder="예: 수국 (Ajisai)" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">잉크색</label>
+                <input type="color" id="penInkColorHex" value="#5E72B8" class="w-full h-9 rounded-xl cursor-pointer" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 펜 비고 (펜 상태, 필기감, 느낌 직접입력) -->
+        <div>
+          <label for="penNotes" class="block text-xs font-semibold th-text-sec mb-1.5">펜 비고 (펜 상태 · 필기감 · 느낌)</label>
+          <textarea id="penNotes" rows="3" placeholder="예: 사각거리는 연필 필기감, 잉크 흐름 풍부함, 바디 미세 기스 있음 등 자유롭게 기록하세요." class="th-input-soft w-full px-3.5 py-2.5 text-xs rounded-xl leading-relaxed resize-y"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t th-border">
+          <button type="button" onclick="closePenModal()" class="px-4 py-2.5 text-xs font-semibold th-btn-soft rounded-xl transition">취소</button>
+          <button type="submit" class="px-5 py-2.5 text-xs font-semibold th-btn-primary rounded-xl shadow-sm transition">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 2: 잉크 등록 / 수정 모달 -->
+  <!-- ========================================================= -->
+  <div id="inkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="th-modal rounded-2xl w-full max-w-xl max-h-[92vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b th-border th-surface-soft flex items-center justify-between">
+        <div>
+          <h2 id="inkModalTitle" class="font-serif text-lg font-bold th-text">잉크 등록</h2>
+          <p class="text-[11px] th-text-muted">잉크 이름이나 색상명을 입력하고 AI 색코드 조회로 실제 발색 컬러를 찾아보세요.</p>
+        </div>
+        <button type="button" onclick="closeInkModal()" class="p-2 rounded-xl th-text-muted hover:opacity-75 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="inkForm" onsubmit="saveInk(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
+        <input type="hidden" id="inkId" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold th-text-sec mb-1.5">제조사 (잉크회사) <span class="text-red-500">*</span></label>
+            <input type="text" id="inkBrand" required placeholder="예: Pilot Iroshizuku, Diamine" class="th-input-soft w-full px-3.5 py-2.5 text-sm rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold th-text-sec mb-1.5">잉크 이름 <span class="text-red-500">*</span></label>
+            <input type="text" id="inkName" required placeholder="예: 수국 Ajisai, 심해 Shin-kai" class="th-input-soft w-full px-3.5 py-2.5 text-sm rounded-xl" />
+          </div>
+        </div>
+
+        <!-- 색상 & AI 조회 -->
+        <div class="p-4 th-surface-soft border th-border rounded-2xl space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-end gap-2.5">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">잉크 색상명 / 키워드</label>
+              <input type="text" id="inkColorName" placeholder="예: 페리윙클 블루, 검붉은 버건디, 포레스트 그린" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+            </div>
+            <button type="button" id="aiColorBtn" onclick="lookupInkColorAI()" class="th-btn-primary inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold disabled:opacity-60 rounded-xl shadow-xs transition whitespace-nowrap">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg>
+              <span id="aiColorBtnText">AI 색코드 조회</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3 pt-1">
+            <div id="inkSwatchPreview" class="w-12 h-12 rounded-xl border border-black/15 shadow-inner flex items-center justify-center shrink-0 transition-colors" style="background-color: #5E72B8;">
+              <svg class="w-5 h-5 text-white/85" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+            </div>
+            <div class="flex-1 grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">HEX 색코드</label>
+                <input type="text" id="inkColorHexText" value="#5E72B8" maxlength="7" oninput="syncHexFromText(this.value)" placeholder="#5E72B8" class="th-input w-full px-3 py-1.5 text-xs font-mono uppercase rounded-xl" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">직접 색상 선택</label>
+                <input type="color" id="inkColorPicker" value="#5E72B8" oninput="syncHexFromPicker(this.value)" class="w-full h-8 rounded-xl cursor-pointer" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold th-text-muted mb-1">발색 설명 / 메모</label>
+            <input type="text" id="inkColorDesc" placeholder="AI 조회 시 자동으로 발색 특징이 입력됩니다" class="th-input w-full px-3 py-1.5 text-xs rounded-xl" />
+          </div>
+          <p id="aiLookupStatus" class="hidden text-[11px] th-accent-text font-medium"></p>
+        </div>
+
+        <!-- 상태 -->
+        <div>
+          <label class="block text-xs font-semibold th-text-sec mb-1.5">상태</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="selectInkStatus('사용중')" data-status="사용중" class="ink-status-btn th-opt py-2.5 rounded-xl text-xs transition">사용중</button>
+            <button type="button" onclick="selectInkStatus('보관중')" data-status="보관중" class="ink-status-btn th-opt py-2.5 rounded-xl text-xs transition">보관중</button>
+            <button type="button" onclick="selectInkStatus('잘안씀')" data-status="잘안씀" class="ink-status-btn th-opt py-2.5 rounded-xl text-xs transition">잘안씀</button>
+          </div>
+        </div>
+
+        <!-- 구입일 / 구입가 / 구매처 / 일시불·할부 -->
+        <div class="p-4 th-surface-soft border th-border rounded-2xl space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구입일</label>
+              <input type="date" id="inkPurchaseDate" oninput="updateInkInstallmentPreview()" class="th-input w-full px-3 py-2 text-sm rounded-xl" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구입가 (원)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs th-text-muted">₩</span>
+                <input type="text" id="inkPrice" inputmode="numeric" oninput="formatPriceInput(this)" placeholder="0" class="th-input w-full pl-7 pr-3 py-2 text-sm rounded-xl text-right font-mono" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold th-text-sec mb-1.5">구매처 (직접입력)</label>
+              <input type="text" id="inkPurchasePlace" placeholder="예: 블루블랙, 핫트랙스" class="th-input w-full px-3 py-2 text-sm rounded-xl" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <span class="text-xs font-semibold th-text-sec">결제 방식</span>
+            <div class="inline-flex th-surface p-1 rounded-xl">
+              <button type="button" onclick="setInkPaymentType('lump')" id="inkPayLumpBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition">일시불</button>
+              <button type="button" onclick="setInkPaymentType('installment')" id="inkPayInstBtn" class="px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition">할부</button>
+            </div>
+          </div>
+
+          <div id="inkInstallmentFields" class="hidden space-y-3 pt-2 border-t th-border">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">할부 개월수</label>
+                <div class="relative">
+                  <input type="number" id="inkInstMonths" min="2" max="60" oninput="updateInkInstallmentPreview()" placeholder="예: 3" class="th-input w-full px-3.5 py-2 pr-12 text-sm rounded-xl" />
+                  <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs th-text-muted">개월</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold th-text-muted mb-1">결제 카드사</label>
+                <input type="text" id="inkInstCard" list="cardCompanyList" placeholder="예: 신한카드" class="th-input w-full px-3.5 py-2 text-sm rounded-xl" />
+              </div>
+            </div>
+            <div id="inkInstPreview" class="hidden px-3 py-2 rounded-xl text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t th-border">
+          <button type="button" onclick="closeInkModal()" class="px-4 py-2.5 text-xs font-semibold th-btn-soft rounded-xl transition">취소</button>
+          <button type="submit" class="px-5 py-2.5 text-xs font-semibold th-btn-primary rounded-xl shadow-sm transition">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 카드사 자동완성 리스트 -->
+  <datalist id="cardCompanyList">
+    <option value="현대카드"></option>
+    <option value="삼성카드"></option>
+    <option value="신한카드"></option>
+    <option value="국민카드"></option>
+    <option value="롯데카드"></option>
+    <option value="하나카드"></option>
+    <option value="우리카드"></option>
+    <option value="비씨카드"></option>
+    <option value="토스뱅크카드"></option>
+    <option value="카카오뱅크카드"></option>
+  </datalist>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 3: 잉크 불러오기 팝업 -->
+  <!-- ========================================================= -->
+  <div id="inkPickerModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/55 backdrop-blur-xs">
+    <div class="th-modal rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-3.5 border-b th-border th-surface-soft flex items-center justify-between">
+        <h3 class="text-sm font-bold th-text">잉크 라이브러리에서 불러오기</h3>
+        <button type="button" onclick="closeInkPickerModal()" class="p-1.5 rounded-lg th-text-muted hover:opacity-75">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-3 border-b th-border">
+        <input type="text" id="inkPickerSearch" oninput="renderInkPickerList()" placeholder="잉크 이름 또는 제조사 검색..." class="th-input-soft w-full px-3.5 py-2 text-xs rounded-xl" />
+      </div>
+      <div id="inkPickerList" class="p-3 overflow-y-auto space-y-2 flex-1"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 4: 커스텀 확인 모달 (alert/confirm 대체) -->
+  <!-- ========================================================= -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/55 backdrop-blur-xs">
+    <div class="th-modal rounded-2xl w-full max-w-sm p-6 space-y-4">
+      <div class="flex items-start gap-3">
+        <div id="confirmIconBox" class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <h3 id="confirmTitle" class="text-sm font-bold th-text">확인</h3>
+          <p id="confirmMessage" class="text-xs th-text-sec mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeConfirmModal()" class="px-4 py-2 text-xs font-semibold th-btn-soft rounded-xl transition">취소</button>
+        <button type="button" id="confirmActionBtn" class="px-4 py-2 text-xs font-semibold th-btn-primary rounded-xl transition">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 컨테이너 -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[80] flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
+
+  <script>
+    // =========================================================================
+    // 1. 상수 및 전역 상태
+    // =========================================================================
+    const STORAGE_KEY = 'fountain_pen_ink_archive_v3';
+    const LEGACY_STORAGE_KEY = 'fountain_pen_ink_archive_v2';
+    const THEME_STORAGE_KEY = 'fountain_pen_ink_theme_v1';
+    const VALID_THEMES = ['classic', 'lavender-blue', 'blue-black'];
+
+    const THEME_LABELS = {
+      'classic': '기존 시안 (클래식)',
+      'lavender-blue': '연보라빛 옅은 파랑',
+      'blue-black': '블루블랙'
+    };
+
+    let appData = { pens: [], inks: [] };
+    let currentTab = 'pens';
+    let penFilter = 'all';
+    let inkFilter = 'all';
+    let financeFilter = 'all'; // 'all' | 'ongoing' | 'completed'
+    let inkViewMode = 'card';  // 'card' | 'table'
+
+    // 모달 임시 폼 상태
+    let formPenNibMaterial = 'steel'; // 'steel' | 'gold'
+    let formPenNibType = 'M';
+    let formPenStatus = '사용중';
+    let formPenPaymentType = 'lump';
+    let formPenInked = false;
+
+    let formInkStatus = '보관중';
+    let formInkPaymentType = 'lump';
+
+    // 유명 만년필 모델별 골드닙 함량(K) 내장 사전 (API 폴백 및 오프라인 지원)
+    const FAMOUS_PEN_NIB_KARAT_DICT = [
+      { keywords: ['823', '커스텀 823', 'custom 823'], karat: '14k', note: 'Pilot Custom 823 (#15 14K 골드닙)' },
+      { keywords: ['845', '커스텀 845', 'custom 845', '우루시', 'urushi'], karat: '18k', note: 'Pilot Custom 845 / Urushi (18K 투톤 골드닙)' },
+      { keywords: ['74', '742', '743', '91', '92', '912', '헤리티지 912', '커스텀 74', 'custom 74', 'custom 912', 'heritage 912'], karat: '14k', note: 'Pilot Custom / Heritage 시리즈 (14K 골드닙)' },
+      { keywords: ['캡리스', 'capless', '배니싱', 'vanishing point', '데시모', 'decimo'], karat: '18k', note: 'Pilot Capless / Vanishing Point (18K 골드닙)' },
+      { keywords: ['엘라보', 'elabo', '팔콘', 'falcon'], karat: '14k', note: 'Pilot Elabo / Falcon (14K 연성 골드닙)' },
+      { keywords: ['m1000', 'm800', 'm805', '소버린 m800', '소버린 m1000'], karat: '18k', note: 'Pelikan Souverän M800/M1000 (18K 투톤 골드닙)' },
+      { keywords: ['m600', 'm605', 'm400', 'm405', 'm300', '소버린 m400', '소버린 m600'], karat: '14k', note: 'Pelikan Souverän M400/M600 (14K 투톤 골드닙)' },
+      { keywords: ['프로기어 슬림', 'pro gear slim', '프로피트 라이트', '프로피트 스탠다드', '1911s', '1911 standard', '시키오리'], karat: '14k', note: 'Sailor Pro Gear Slim / 1911S (14K 골드닙)' },
+      { keywords: ['프로기어', 'pro gear', '프로피트 21', '1911l', '1911 large', '킹오브펜', 'king of pen', 'kop'], karat: '21k', note: 'Sailor Pro Gear / 1911L / KOP (21K 골드닙)' },
+      { keywords: ['3776', '센츄리', 'century'], karat: '14k', note: 'Platinum #3776 Century (14K 골드닙)' },
+      { keywords: ['프레지던트', 'president', '이즈모', 'izumo'], karat: '18k', note: 'Platinum President / Izumo (18K 골드닙)' },
+      { keywords: ['149', '마이스터스튁 149', 'meisterstuck 149'], karat: '18k', note: 'Montblanc Meisterstück 149 (18K 골드닙)' },
+      { keywords: ['146', '145', '르그랑', '클래식', '마이스터스튁', 'meisterstuck'], karat: '14k', note: 'Montblanc Meisterstück 145/146 (14K 골드닙)' },
+      { keywords: ['라미 2000', 'lamy 2000', '임포리움', '다이얼로그', 'dialog'], karat: '14k', note: 'LAMY 2000 / Dialog (14K 백금도금 골드닙)' },
+      { keywords: ['듀오폴드', 'duofold', '소네트 18k', '프리미어'], karat: '18k', note: 'Parker Duofold / Premier (18K 골드닙)' },
+      { keywords: ['까렌', 'carene', '익셉션', '에드슨'], karat: '18k', note: 'Waterman Carène / Exception (18K 골드닙)' },
+      { keywords: ['호모사피엔스', 'homo sapiens', '비스콘티', 'visconti'], karat: '18k', note: 'Visconti Homo Sapiens (18K 골드닙)' },
+      { keywords: ['옵티마', 'optima', '88', '오로라', 'aurora'], karat: '14k', note: 'Aurora Optima / 88 (14K 골드닙)' }
+    ];
+
+    // 유명 만년필 잉크 내장 사전 (API 폴백 및 오프라인 지원)
+    const FAMOUS_INK_DICTIONARY = [
+      { keywords: ['수국', '아지사이', 'ajisai', '페리윙클', 'periwinkle', '연보라'], hex: '#5E72B8', name: '페리윙클 블루', desc: '비 갠 수국 꽃잎을 닮은 연보라빛의 맑고 우아한 파랑' },
+      { keywords: ['심해', '신카이', 'shin-kai', 'shinkai'], hex: '#2C3D55', name: '딥 블루블랙', desc: '깊은 바다를 닮은 차분하고 회색기가 감도는 정석 블루블랙' },
+      { keywords: ['월야', '츠키요', 'tsuki-yo', 'tsukiyo'], hex: '#1E4D6B', name: '딥 틸 블루', desc: '밤하늘 달빛을 머금은 차분한 청록빛 딥 블루' },
+      { keywords: ['송로', '쇼로', 'syo-ro', 'syoro'], hex: '#215B5B', name: '소나무 청록', desc: '마르면서 푸른빛에서 깊은 소나무 청록색으로 변하는 색' },
+      { keywords: ['공작', '쿠자쿠', 'ku-jaku', 'kujaku'], hex: '#0F5C6E', name: '피콕 틸', desc: '공작 깃털처럼 선명하고 고급스러운 청록색' },
+      { keywords: ['산포도', '야마부도', 'yama-budo', 'yamabudo'], hex: '#7A1B4E', name: '자주 와인', desc: '진한 산포도 빛깔의 버건디 마젠타 (금테 발현)' },
+      { keywords: ['동장군', 'fuyu-syogun', 'fuyusyogun'], hex: '#6E7785', name: '쿨 그레이', desc: '겨울 서리처럼 서늘하고 푸른빛이 도는 회색' },
+      { keywords: ['콘페키', '감벽', 'kon-peki', 'konpeki'], hex: '#0073B7', name: '세룰리안 블루', desc: '여름 하늘처럼 청량하고 선명한 코발트 블루' },
+      { keywords: ['아사가오', '나팔꽃', 'asa-gao', 'asagao'], hex: '#23479B', name: '로얄 블루', desc: '아침 나팔꽃처럼 맑고 또렷한 정석 로얄 블루' },
+      { keywords: ['옥스블러드', 'oxblood'], hex: '#5C1618', name: '검붉은 버건디', desc: '묵직하고 깊은 적갈색 계열의 클래식한 다크 레드' },
+      { keywords: ['라이터스 블러드', 'writers blood', "writer's blood"], hex: '#4A121C', name: '다크 와인 버건디', desc: '흐름이 풍부한 깊은 검붉은 와인빛 잉크' },
+      { keywords: ['올리빈', 'olivine'], hex: '#2E4A36', name: '포레스트 올리브', desc: '보석 감람석을 닮은 차분하고 짙은 숲빛 그린' },
+      { keywords: ['야마도리', 'yamadori', '산새'], hex: '#145966', name: '청록 (적테)', desc: '깊은 청록색 바탕에 붉은 적테가 도는 세일러 대표 잉크' },
+      { keywords: ['오로라 보레알리스', 'aurora borealis'], hex: '#14585A', name: '오로라 틸', desc: '북극 오로라를 닮은 신비로운 다크 틸 그린' },
+      { keywords: ['에인션트 코퍼', 'ancient copper'], hex: '#8F3E1E', name: '고동색 구리', desc: '고풍스러운 구리빛의 따뜻한 적갈색' },
+      { keywords: ['아이리쉬 그린', 'irish green'], hex: '#1F5C38', name: '에메랄드 그린', desc: '풍부한 농담이 매력적인 몽블랑 클래식 그린' },
+      { keywords: ['미드나잇 블루', 'midnight blue'], hex: '#1D2F4F', name: '미드나잇 블루블랙', desc: '단정하고 격식 있는 어두운 밤하늘 블루블랙' },
+      { keywords: ['네코야나기', 'nekoyanagi'], hex: '#8A86C8', name: '라벤더 쉐이딩', desc: '연보라와 파스텔 블루가 오묘하게 분리되는 멀티쉐이딩 잉크' },
+      { keywords: ['하하', 'haha'], hex: '#88A6C9', name: '파스텔 스카이 블루', desc: '수채화처럼 옅고 투명한 하늘빛 멀티쉐이딩 잉크' },
+      { keywords: ['블루블랙', 'blue black', 'blue-black'], hex: '#1E3A5F', name: '클래식 블루블랙', desc: '실용적이고 차분한 깊은 남색빛 블루블랙' },
+      { keywords: ['버건디', 'burgundy', '와인'], hex: '#631D2E', name: '딥 버건디', desc: '깊고 중후한 와인빛의 검붉은 버건디' },
+      { keywords: ['포레스트', 'forest', '딥그린'], hex: '#254734', name: '포레스트 그린', desc: '깊은 숲을 닮은 차분하고 짙은 녹색' }
+    ];
+
+    // =========================================================================
+    // 2. 3가지 컬러 테마 전환기 로직
+    // =========================================================================
+
+    function setTheme(themeName, silent = false) {
+      const target = VALID_THEMES.includes(themeName) ? themeName : 'lavender-blue';
+      document.documentElement.setAttribute('data-theme', target);
+
+      document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeBtn === target);
+      });
+
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, target);
+      } catch (e) { /* 저장 무시 */ }
+
+      if (!silent) {
+        showToast(`'${THEME_LABELS[target]}' 테마 시안이 적용되었습니다.`);
+      }
+    }
+
+    function loadSavedTheme() {
+      let saved = 'lavender-blue'; // 기본 테마: 연보라빛 옅은 파랑
+      try {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY);
+        if (stored && VALID_THEMES.includes(stored)) {
+          saved = stored;
+        }
+      } catch (e) { /* 무시 */ }
+      setTheme(saved, true);
+    }
+
+    // =========================================================================
+    // 3. 날짜 / 달력 기반 경과 계산 (할부 끝 + 세척필요)
+    // =========================================================================
+
+    function formatDateYMD(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getTodayDate() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function getTodayStr() {
+      return formatDateYMD(getTodayDate());
+    }
+
+    function getDaysAgoStr(daysAgo) {
+      const d = getTodayDate();
+      d.setDate(d.getDate() - daysAgo);
+      return formatDateYMD(d);
+    }
+
+    function getMonthsAgoStr(monthsAgo, extraDaysOffset = 0) {
+      const d = getTodayDate();
+      const shifted = addMonths(d, -monthsAgo);
+      shifted.setDate(shifted.getDate() - extraDaysOffset);
+      return formatDateYMD(shifted);
+    }
+
+    function parseYMD(dateStr) {
+      if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    /**
+     * 달력상 정확히 N개월을 더한 날짜 반환 (말일 보정 포함)
+     */
+    function addMonths(dateObj, months) {
+      const targetYear = dateObj.getFullYear();
+      const targetMonth = dateObj.getMonth() + months;
+      const originalDay = dateObj.getDate();
+      const lastDayOfTargetMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+      return new Date(targetYear, targetMonth, Math.min(originalDay, lastDayOfTargetMonth));
+    }
+
+    /**
+     * 구입일로부터 할부개월 경과 여부 및 진행 회차 자동 계산
+     * 기준: addMonths(구입일, 할부개월) <= 오늘 날짜 -> '할부 끝'
+     */
+    function checkInstallmentStatus(purchaseDateStr, installmentMonths) {
+      const months = Number(installmentMonths) || 0;
+      const purchaseDate = parseYMD(purchaseDateStr);
+
+      if (!purchaseDate || months <= 0) {
+        return {
+          valid: false,
+          isCompleted: false,
+          currentRound: 0,
+          totalMonths: months,
+          endDateStr: ''
+        };
+      }
+
+      const today = getTodayDate();
+      const endDate = addMonths(purchaseDate, months);
+      const isCompleted = endDate.getTime() <= today.getTime();
+
+      let currentRound = months;
+      if (!isCompleted) {
+        let elapsedMonths =
+          (today.getFullYear() - purchaseDate.getFullYear()) * 12 +
+          (today.getMonth() - purchaseDate.getMonth());
+        if (today.getDate() < purchaseDate.getDate()) {
+          elapsedMonths -= 1;
+        }
+        currentRound = Math.min(months, Math.max(1, elapsedMonths + 1));
+      }
+
+      return {
+        valid: true,
+        isCompleted,
+        currentRound,
+        totalMonths: months,
+        endDateStr: formatDateYMD(endDate)
+      };
+    }
+
+    /**
+     * 잉크 인입일 기준 달력상 2개월 경과 시 세척필요 자동 판별
+     */
+    function checkCleaningStatus(inkedDateStr) {
+      const inkedDate = parseYMD(inkedDateStr);
+      if (!inkedDate) return { needsCleaning: false, daysElapsed: 0 };
+
+      const today = getTodayDate();
+      const diffMs = today.getTime() - inkedDate.getTime();
+      const daysElapsed = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+      const twoMonthsLater = addMonths(inkedDate, 2);
+
+      return {
+        needsCleaning: twoMonthsLater.getTime() <= today.getTime(),
+        daysElapsed
+      };
+    }
+
+    function formatKRW(num) {
+      return '₩' + (Number(num) || 0).toLocaleString('ko-KR');
+    }
+
+    function formatPriceInput(input) {
+      const digits = input.value.replace(/[^\d]/g, '');
+      input.value = digits ? Number(digits).toLocaleString('ko-KR') : '';
+    }
+
+    function parsePriceValue(str) {
+      if (!str) return 0;
+      return Number(String(str).replace(/[^\d]/g, '')) || 0;
+    }
+
+    function esc(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function uid(prefix) {
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    }
+
+    /**
+     * 닙 표기 포맷터
+     * 예: 스틸 F닙 / 금 M닙[14k]
+     */
+    function formatNibLabel(nibMaterial, nibSize, nibKarat) {
+      const sizeRaw = (nibSize || '-').trim();
+      const sizeWithUnit = sizeRaw.endsWith('닙') ? sizeRaw : `${sizeRaw}닙`;
+      const karatClean = (nibKarat || '').trim().toLowerCase();
+
+      if (nibMaterial === 'gold') {
+        return karatClean ? `금 ${sizeWithUnit}[${karatClean}]` : `금 ${sizeWithUnit}`;
+      }
+      return `스틸 ${sizeWithUnit}`;
+    }
+
+    // =========================================================================
+    // 4. 초기 샘플 데이터 및 마이그레이션
+    // =========================================================================
+
+    function createSampleData() {
+      const inkAjisai = 'ink_sample_ajisai';
+      const inkShinkai = 'ink_sample_shinkai';
+      const inkOxblood = 'ink_sample_oxblood';
+      const inkOlivine = 'ink_sample_olivine';
+      const inkShikioriSet = 'ink_sample_yamadori';
+
+      const sampleInks = [
+        {
+          id: inkAjisai,
+          purchaseDate: getDaysAgoStr(35),
+          price: 28000,
+          purchasePlace: '블루블랙 펜샵',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'Pilot Iroshizuku',
+          name: '수국 (Ajisai)',
+          colorName: '페리윙클 블루',
+          colorHex: '#5E72B8',
+          colorDesc: '비 갠 수국 꽃잎을 닮은 연보라빛의 맑고 우아한 파랑',
+          status: '사용중'
+        },
+        {
+          id: inkShinkai,
+          purchaseDate: getMonthsAgoStr(4, 5),
+          price: 28000,
+          purchasePlace: '베스트펜',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'Pilot Iroshizuku',
+          name: '심해 (Shin-kai)',
+          colorName: '딥 블루블랙',
+          colorHex: '#2C3D55',
+          colorDesc: '깊은 바다를 닮은 차분하고 회색기가 도는 블루블랙',
+          status: '사용중'
+        },
+        {
+          id: inkOxblood,
+          purchaseDate: getMonthsAgoStr(3, 12),
+          price: 16500,
+          purchasePlace: '교보문고 핫트랙스',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'Diamine',
+          name: '옥스블러드 (Oxblood)',
+          colorName: '검붉은 버건디',
+          colorHex: '#5C1618',
+          colorDesc: '묵직하고 클래식한 적갈색 계열의 깊은 버건디 레드',
+          status: '보관중'
+        },
+        {
+          id: inkOlivine,
+          purchaseDate: getMonthsAgoStr(2, 18),
+          price: 34000,
+          purchasePlace: '독일 직구',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'Pelikan Edelstein',
+          name: '올리빈 (Olivine)',
+          colorName: '포레스트 올리브',
+          colorHex: '#2E4A36',
+          colorDesc: '보석 감람석을 닮은 차분하고 깊은 짙은 포레스트 그린',
+          status: '사용중'
+        },
+        {
+          id: inkShikioriSet,
+          purchaseDate: getMonthsAgoStr(5, 3), // 5개월 전 3개월 할부 -> 할부 끝!
+          price: 84000,
+          purchasePlace: '일본 라쿠텐 직구',
+          paymentType: 'installment',
+          installmentMonths: 3,
+          installmentCard: '신한카드',
+          brand: 'Sailor Shikiori',
+          name: '사계절 4병 세트 (야마도리 외)',
+          colorName: '청록 (적테)',
+          colorHex: '#145966',
+          colorDesc: '깊은 청록색 바탕에 붉은 적테가 도는 세일러 인기 잉크 세트',
+          status: '잘안씀'
+        }
+      ];
+
+      const samplePens = [
+        {
+          id: 'pen_sample_823',
+          purchaseDate: getMonthsAgoStr(7, 4), // 7개월 전 6개월 할부 -> '할부 끝'
+          price: 420000,
+          purchasePlace: '베스트펜',
+          paymentType: 'installment',
+          installmentMonths: 6,
+          installmentCard: '현대카드',
+          brand: 'Pilot',
+          name: '커스텀 823',
+          nibMaterial: 'gold',
+          nibKarat: '14k',
+          nibSize: 'M',
+          colorName: '스모크 블랙',
+          colorHex: '#2C2A29',
+          status: '사용중',
+          isLimited: false,
+          warranty: '있음 (구매처 도장 O)',
+          caseInfo: '있음 (전용 잉크 동봉 박스)',
+          notes: '버터처럼 부드러운 필기감과 묵직한 밸런스. 진공 필러라 장문 필기에 최적.',
+          inked: true,
+          inkedDate: getDaysAgoStr(74), // 2개월 경과 -> '세척필요'
+          linkedInkId: inkShinkai,
+          inkBrand: 'Pilot Iroshizuku',
+          inkName: '심해 (Shin-kai)',
+          inkColorHex: '#2C3D55'
+        },
+        {
+          id: 'pen_sample_m400',
+          purchaseDate: getMonthsAgoStr(2, 5), // 2개월 전 6개월 할부 -> '3/6 진행중'
+          price: 480000,
+          purchasePlace: '독일 직구',
+          paymentType: 'installment',
+          installmentMonths: 6,
+          installmentCard: '삼성카드',
+          brand: 'Pelikan',
+          name: '소버린 M400',
+          nibMaterial: 'gold',
+          nibKarat: '14k',
+          nibSize: 'F',
+          colorName: '그린 스트라이프',
+          colorHex: '#1F5638',
+          status: '사용중',
+          isLimited: false,
+          warranty: '있음 (국제 보증서)',
+          caseInfo: '있음 (기프트 박스)',
+          notes: '유럽 F닙이라 국산 M에 가까운 굵기. 잉크 흐름이 매우 풍부하고 촉촉함.',
+          inked: true,
+          inkedDate: getDaysAgoStr(67), // 2개월 경과 -> '세척필요'
+          linkedInkId: inkOlivine,
+          inkBrand: 'Pelikan Edelstein',
+          inkName: '올리빈 (Olivine)',
+          inkColorHex: '#2E4A36'
+        },
+        {
+          id: 'pen_sample_twsbi',
+          purchaseDate: getDaysAgoStr(40),
+          price: 92000,
+          purchasePlace: '블루블랙 펜샵',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'TWSBI',
+          name: '에코 라벤더 에디션',
+          nibMaterial: 'steel',
+          nibKarat: '',
+          nibSize: '1.1',
+          colorName: '페리윙클 라벤더',
+          colorHex: '#7A86CC',
+          status: '사용중',
+          isLimited: true,
+          warranty: '있음',
+          caseInfo: '있음 (렌치·실리콘구리스 포함)',
+          notes: '스텁 1.1닙 특유의 강약 표현이 매력적. 투명 배럴에 수국 잉크 색감이 그대로 비침.',
+          inked: true,
+          inkedDate: getDaysAgoStr(14),
+          linkedInkId: inkAjisai,
+          inkBrand: 'Pilot Iroshizuku',
+          inkName: '수국 (Ajisai)',
+          inkColorHex: '#5E72B8'
+        },
+        {
+          id: 'pen_sample_custom912',
+          purchaseDate: getMonthsAgoStr(4, 15),
+          price: 295000,
+          purchasePlace: '도쿄 이토야',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'Pilot',
+          name: '커스텀 헤리티지 912',
+          nibMaterial: 'gold',
+          nibKarat: '14k',
+          nibSize: 'FA',
+          colorName: '딥 블랙 로듐',
+          colorHex: '#181C24',
+          status: '보관중',
+          isLimited: false,
+          warranty: '있음 (일본 현지 보증서)',
+          caseInfo: '있음',
+          notes: '연성 FA닙이라 힘을 살짝 주면 획이 유연하게 굵어짐. 천천히 필사할 때 좋음.',
+          inked: false,
+          inkedDate: '',
+          linkedInkId: '',
+          inkBrand: '',
+          inkName: '',
+          inkColorHex: '#5E72B8'
+        },
+        {
+          id: 'pen_sample_safari',
+          purchaseDate: getMonthsAgoStr(10, 2),
+          price: 39000,
+          purchasePlace: '교보문고 핫트랙스',
+          paymentType: 'lump',
+          installmentMonths: null,
+          installmentCard: '',
+          brand: 'LAMY',
+          name: '사파리 블루블랙',
+          nibMaterial: 'steel',
+          nibKarat: '',
+          nibSize: 'EF',
+          colorName: '매트 네이비',
+          colorHex: '#1E3A5F',
+          status: '잘안씀',
+          isLimited: true,
+          warranty: '없음',
+          caseInfo: '없음 (단품)',
+          notes: '가볍고 튼튼한 데일리용. 사각거리는 연필 느낌, 캡에 미세 생활기스 있음.',
+          inked: false,
+          inkedDate: '',
+          linkedInkId: '',
+          inkBrand: '',
+          inkName: '',
+          inkColorHex: '#1E3A5F'
+        }
+      ];
+
+      return { pens: samplePens, inks: sampleInks };
+    }
+
+    /**
+     * 구버전 데이터(v2)가 있을 경우 누락 필드를 안전하게 보강
+     */
+    function normalizeLoadedData(parsed) {
+      const sampleDefaults = createSampleData();
+      const samplePenMap = Object.fromEntries(sampleDefaults.pens.map(p => [p.id, p]));
+      const sampleInkMap = Object.fromEntries(sampleDefaults.inks.map(i => [i.id, i]));
+
+      const pens = parsed.pens.map(p => {
+        const def = samplePenMap[p.id];
+        return {
+          nibMaterial: def ? def.nibMaterial : 'steel',
+          nibKarat: def ? def.nibKarat : '',
+          purchasePlace: def ? def.purchasePlace : '',
+          warranty: def ? def.warranty : '',
+          caseInfo: def ? def.caseInfo : '',
+          isLimited: def ? def.isLimited : false,
+          notes: def ? def.notes : '',
+          ...p
+        };
+      });
+
+      const inks = parsed.inks.map(i => {
+        const def = sampleInkMap[i.id];
+        return {
+          purchasePlace: def ? def.purchasePlace : '',
+          ...i
+        };
+      });
+
+      return { pens, inks };
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.pens) && Array.isArray(parsed.inks)) {
+            appData = normalizeLoadedData(parsed);
+            saveData();
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('저장된 데이터를 불러오지 못해 초기 샘플을 로드합니다.', e);
+      }
+      appData = createSampleData();
+      saveData();
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        showToast('브라우저 저장소 공간이 부족하여 저장에 실패했습니다.', 'error');
+      }
+    }
+
+    // =========================================================================
+    // 5. 공통 배지 HTML 생성 (상태 / 결제 & 할부 끝 / 구성품 / 한정)
+    // =========================================================================
+
+    function getStatusBadgeHTML(status) {
+      if (status === '사용중') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>사용중</span>`;
+      }
+      if (status === '보관중') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/80"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>보관중</span>`;
+      }
+      return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-stone-100 text-stone-500 border border-stone-200/80"><span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>잘안씀</span>`;
+    }
+
+    function getPaymentBadgeHTML(item) {
+      if (item.paymentType !== 'installment' || !item.installmentMonths) {
+        return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium th-surface th-text-muted mt-1">일시불</span>`;
+      }
+
+      const inst = checkInstallmentStatus(item.purchaseDate, item.installmentMonths);
+      const cardText = item.installmentCard ? `${esc(item.installmentCard)} ` : '';
+
+      if (inst.valid && inst.isCompleted) {
+        return `
+          <div class="flex flex-wrap items-center gap-1 mt-1">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              할부 끝
+            </span>
+            <span class="text-[10px] th-text-muted line-through">${cardText}${inst.totalMonths}개월</span>
+          </div>
+        `;
+      }
+
+      const roundText = inst.valid ? ` (${inst.currentRound}/${inst.totalMonths} 진행중)` : ' 진행중';
+      return `
+        <div class="mt-1">
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/80">
+            ${cardText}${item.installmentMonths}개월${roundText}
+          </span>
+        </div>
+      `;
+    }
+
+    function getAccessoryTagHTML(label, val) {
+      const text = (val || '').trim();
+      if (!text) {
+        return `<span class="inline-flex items-center gap-1 text-[11px] th-text-muted opacity-65">${label}: 미기입</span>`;
+      }
+      const isNegative = text.startsWith('없음') || text === 'X' || text === 'x' || text === '미포함';
+      const dotColor = isNegative ? 'bg-slate-300' : 'bg-emerald-500';
+      const textColor = isNegative ? 'th-text-muted' : 'th-text';
+      return `
+        <div class="flex items-start gap-1.5 text-[11px] leading-snug">
+          <span class="w-1.5 h-1.5 rounded-full ${dotColor} mt-1 shrink-0"></span>
+          <span class="th-text-muted shrink-0">${label}</span>
+          <span class="font-medium ${textColor}">${esc(text)}</span>
+        </div>
+      `;
+    }
+
+    /**
+     * 한정판 버튼 (네이비/블루블랙 바탕 + 황금색 글씨 '한정')
+     * 클릭 시 한정판 필터 토글
+     */
+    function getLimitedButtonHTML() {
+      return `
+        <button type="button" onclick="toggleLimitedFilter()" title="한정판 펜만 모아보기" class="btn-limited-edition inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold leading-tight shrink-0 cursor-pointer">
+          한정
+        </button>
+      `;
+    }
+
+    function toggleLimitedFilter() {
+      if (penFilter === 'limited') {
+        setPenFilter('all');
+        showToast('전체 만년필 목록을 표시합니다.');
+      } else {
+        setPenFilter('limited');
+        showToast('한정판 만년필만 모아봅니다.');
+      }
+    }
+
+    // =========================================================================
+    // 6. 전체 & 대시보드 렌더링
+    // =========================================================================
+
+    function renderAll() {
+      renderDashboard();
+      renderPens();
+      renderInks();
+      renderFinance();
+    }
+
+    function renderDashboard() {
+      const penCount = appData.pens.length;
+      const inkCount = appData.inks.length;
+
+      const goldNibCount = appData.pens.filter(p => p.nibMaterial === 'gold').length;
+      const steelNibCount = penCount - goldNibCount;
+      const limitedCount = appData.pens.filter(p => p.isLimited).length;
+
+      const penSpent = appData.pens.reduce((s, p) => s + (Number(p.price) || 0), 0);
+      const inkSpent = appData.inks.reduce((s, i) => s + (Number(i.price) || 0), 0);
+      const totalSpent = penSpent + inkSpent;
+
+      const allInstallments = [...appData.pens, ...appData.inks].filter(
+        x => x.paymentType === 'installment' && Number(x.installmentMonths) > 0
+      );
+
+      let ongoingCount = 0;
+      let completedCount = 0;
+      let ongoingMonthlyTotal = 0;
+
+      allInstallments.forEach(item => {
+        const st = checkInstallmentStatus(item.purchaseDate, item.installmentMonths);
+        if (st.valid && st.isCompleted) {
+          completedCount++;
+        } else {
+          ongoingCount++;
+          ongoingMonthlyTotal += Math.round((Number(item.price) || 0) / Number(item.installmentMonths));
+        }
+      });
+
+      const inkedPens = appData.pens.filter(p => p.inked);
+      const activePens = appData.pens.filter(p => p.status === '사용중').length;
+      const storedPens = appData.pens.filter(p => p.status === '보관중').length;
+      const unusedPens = appData.pens.filter(p => p.status === '잘안씀').length;
+      const cleaningNeededCount = inkedPens.filter(p => checkCleaningStatus(p.inkedDate).needsCleaning).length;
+
+      document.getElementById('statPenCount').textContent = penCount;
+      document.getElementById('statInkCount').textContent = inkCount;
+      document.getElementById('statPenBreakdownSub').textContent = `골드닙 ${goldNibCount} · 스틸닙 ${steelNibCount} · 한정판 ${limitedCount}`;
+
+      document.getElementById('statTotalSpent').textContent = formatKRW(totalSpent);
+      document.getElementById('statSpentBreakdown').textContent = `펜 ${formatKRW(penSpent)} · 잉크 ${formatKRW(inkSpent)}`;
+      document.getElementById('statOngoingMonthlyBadge').textContent =
+        ongoingCount > 0 ? `진행중 월 ${formatKRW(ongoingMonthlyTotal)}` : '진행중 할부 없음';
+      document.getElementById('statCompletedInstBadge').textContent = `할부 끝 ${completedCount}건`;
+
+      document.getElementById('statInkedCount').textContent = inkedPens.length;
+      document.getElementById('statActiveStatusSub').textContent = `사용중 ${activePens} · 보관중 ${storedPens} · 잘안씀 ${unusedPens}`;
+
+      document.getElementById('statCleaningCount').textContent = cleaningNeededCount;
+      document.getElementById('filterCleaningCount').textContent = cleaningNeededCount;
+      document.getElementById('filterLimitedCount').textContent = limitedCount;
+
+      const cleaningCard = document.getElementById('statCleaningCard');
+      const cleaningDot = document.getElementById('cleaningDot');
+      if (cleaningNeededCount > 0) {
+        cleaningCard.style.borderColor = '#FCA5A5';
+        cleaningDot.classList.add('badge-cleaning');
+      } else {
+        cleaningCard.style.borderColor = '';
+        cleaningDot.classList.remove('badge-cleaning');
+      }
+
+      document.getElementById('tabBadge-pens').textContent = penCount;
+      document.getElementById('tabBadge-inks').textContent = inkCount;
+      document.getElementById('tabBadge-finance').textContent = ongoingCount;
+    }
+
+    // =========================================================================
+    // 7. 만년필 차트 렌더링
+    // =========================================================================
+
+    function renderPens() {
+      const search = (document.getElementById('penSearchInput').value || '').trim().toLowerCase();
+      const instFilter = document.getElementById('penInstFilterSelect').value;
+      const sortBy = document.getElementById('penSortSelect').value;
+
+      let list = appData.pens.map(p => {
+        const cleaning = p.inked ? checkCleaningStatus(p.inkedDate) : { needsCleaning: false, daysElapsed: -1 };
+        const inst = p.paymentType === 'installment'
+          ? checkInstallmentStatus(p.purchaseDate, p.installmentMonths)
+          : { valid: false, isCompleted: false };
+        return { ...p, _cleaning: cleaning, _inst: inst };
+      });
+
+      // 상태 / 세척 / 한정판 필터
+      if (penFilter === 'cleaning') {
+        list = list.filter(p => p._cleaning.needsCleaning);
+      } else if (penFilter === 'limited') {
+        list = list.filter(p => Boolean(p.isLimited));
+      } else if (penFilter !== 'all') {
+        list = list.filter(p => p.status === penFilter);
+      }
+
+      // 결제/할부 필터
+      if (instFilter === 'ongoing') {
+        list = list.filter(p => p.paymentType === 'installment' && !(p._inst.valid && p._inst.isCompleted));
+      } else if (instFilter === 'completed') {
+        list = list.filter(p => p.paymentType === 'installment' && p._inst.valid && p._inst.isCompleted);
+      } else if (instFilter === 'lump') {
+        list = list.filter(p => p.paymentType !== 'installment');
+      }
+
+      // 통합 검색 (제조사, 펜이름, 닙/금함량, 구매처, 보증서, 케이스, 비고, 잉크, 카드 등)
+      if (search) {
+        list = list.filter(p => {
+          const nibText = formatNibLabel(p.nibMaterial, p.nibSize, p.nibKarat);
+          const hay = [
+            p.brand, p.name, p.nibSize, nibText, p.nibKarat, p.colorName,
+            p.purchasePlace, p.warranty, p.caseInfo, p.notes,
+            p.installmentCard, p.inkBrand, p.inkName, p.status,
+            p.isLimited ? '한정 한정판 limited' : '',
+            (p._inst.valid && p._inst.isCompleted) ? '할부 끝 완납' : ''
+          ].join(' ').toLowerCase();
+          return hay.includes(search);
+        });
+      }
+
+      // 정렬
+      list.sort((a, b) => {
+        if (sortBy === 'cleaningFirst') {
+          if (a._cleaning.needsCleaning !== b._cleaning.needsCleaning) {
+            return a._cleaning.needsCleaning ? -1 : 1;
+          }
+          if (a.inked !== b.inked) return a.inked ? -1 : 1;
+          return (b.purchaseDate || '').localeCompare(a.purchaseDate || '');
+        }
+        if (sortBy === 'dateDesc') return (b.purchaseDate || '').localeCompare(a.purchaseDate || '');
+        if (sortBy === 'dateAsc') return (a.purchaseDate || '').localeCompare(b.purchaseDate || '');
+        if (sortBy === 'priceDesc') return (Number(b.price) || 0) - (Number(a.price) || 0);
+        if (sortBy === 'priceAsc') return (Number(a.price) || 0) - (Number(b.price) || 0);
+        if (sortBy === 'inkDateAsc') {
+          if (!a.inked && !b.inked) return 0;
+          if (!a.inked) return 1;
+          if (!b.inked) return -1;
+          return (a.inkedDate || '9999-99-99').localeCompare(b.inkedDate || '9999-99-99');
+        }
+        return 0;
+      });
+
+      const tbody = document.getElementById('penTableBody');
+      const mobileList = document.getElementById('penMobileList');
+      const emptyState = document.getElementById('penEmptyState');
+
+      if (list.length === 0) {
+        tbody.innerHTML = '';
+        mobileList.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      // 데스크톱 테이블
+      tbody.innerHTML = list.map(pen => {
+        const inkHtml = renderPenInkCellHTML(pen);
+        const rowBg = pen._cleaning.needsCleaning ? 'bg-red-50/35' : '';
+        const nibLabel = formatNibLabel(pen.nibMaterial, pen.nibSize, pen.nibKarat);
+        const nibBadgeClass = pen.nibMaterial === 'gold' ? 'nib-badge-gold' : 'nib-badge-steel';
+
+        return `
+          <tr class="th-row ${rowBg}">
+            <td class="py-4 px-4 align-top max-w-[260px]">
+              <div class="text-[11px] font-semibold th-text-muted tracking-wide uppercase">${esc(pen.brand)}</div>
+              <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                <span class="font-bold th-text text-sm">${esc(pen.name)}</span>
+                ${pen.isLimited ? getLimitedButtonHTML() : ''}
+              </div>
+              ${pen.colorName ? `
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full border border-black/15 shrink-0" style="background-color: ${esc(pen.colorHex || '#334155')};"></span>
+                  <span class="text-xs th-text-muted">${esc(pen.colorName)}</span>
+                </div>
+              ` : ''}
+              ${pen.notes ? `
+                <div class="mt-2 px-2.5 py-1.5 rounded-lg th-surface-soft border th-border text-[11px] th-text-sec leading-relaxed">
+                  ${esc(pen.notes)}
+                </div>
+              ` : ''}
+            </td>
+            <td class="py-4 px-3 text-center align-top whitespace-nowrap">
+              <span class="inline-block px-2.5 py-1 rounded-lg ${nibBadgeClass} text-xs font-bold font-mono">
+                ${esc(nibLabel)}
+              </span>
+            </td>
+            <td class="py-4 px-4 align-top whitespace-nowrap">
+              <div class="text-xs font-mono th-text-muted">${esc(pen.purchaseDate || '-')}</div>
+              <div class="text-sm font-bold font-mono th-text mt-0.5">${formatKRW(pen.price)}</div>
+              ${pen.purchasePlace ? `
+                <div class="text-[11px] th-text-sec mt-1 flex items-center gap-1">
+                  <svg class="w-3 h-3 th-text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>${esc(pen.purchasePlace)}</span>
+                </div>
+              ` : ''}
+              ${getPaymentBadgeHTML(pen)}
+            </td>
+            <td class="py-4 px-3 align-top min-w-[140px]">
+              <div class="space-y-1.5">
+                ${getAccessoryTagHTML('보증서', pen.warranty)}
+                ${getAccessoryTagHTML('케이스', pen.caseInfo)}
+              </div>
+            </td>
+            <td class="py-4 px-3 text-center align-top whitespace-nowrap">
+              ${getStatusBadgeHTML(pen.status)}
+            </td>
+            <td class="py-4 px-4 align-top min-w-[235px]">
+              ${inkHtml}
+            </td>
+            <td class="py-4 px-4 text-right align-top whitespace-nowrap">
+              <div class="inline-flex items-center justify-end gap-1">
+                ${pen.inked ? `
+                  <button type="button" onclick="confirmCleanPen('${pen.id}')" title="세척 완료 처리" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white hover:bg-red-700' : 'th-btn-soft'} transition">
+                    세척완료
+                  </button>
+                ` : ''}
+                <button type="button" onclick="openPenModal('${pen.id}')" title="수정" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button type="button" onclick="confirmDeletePen('${pen.id}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // 모바일 카드 뷰
+      mobileList.innerHTML = list.map(pen => {
+        const inkHtml = renderPenInkCellHTML(pen);
+        const cleanStyle = pen._cleaning.needsCleaning ? 'border-color: #FCA5A5;' : '';
+        const nibLabel = formatNibLabel(pen.nibMaterial, pen.nibSize, pen.nibKarat);
+        const nibBadgeClass = pen.nibMaterial === 'gold' ? 'nib-badge-gold' : 'nib-badge-steel';
+
+        return `
+          <div class="th-card rounded-2xl p-4 space-y-3" style="${cleanStyle}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[11px] font-semibold th-text-muted uppercase">${esc(pen.brand)}</span>
+                  <span class="px-2 py-0.5 rounded-md ${nibBadgeClass} text-[11px] font-bold font-mono">${esc(nibLabel)}</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                  <h3 class="font-bold th-text text-base">${esc(pen.name)}</h3>
+                  ${pen.isLimited ? getLimitedButtonHTML() : ''}
+                </div>
+                ${pen.colorName ? `
+                  <div class="flex items-center gap-1.5 mt-1">
+                    <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background-color: ${esc(pen.colorHex || '#334155')};"></span>
+                    <span class="text-xs th-text-muted">${esc(pen.colorName)}</span>
+                  </div>
+                ` : ''}
+              </div>
+              <div class="shrink-0">${getStatusBadgeHTML(pen.status)}</div>
+            </div>
+
+            <div class="flex items-start justify-between text-xs pt-2.5 border-t th-border gap-2">
+              <div class="space-y-0.5">
+                <div class="th-text-muted font-mono">${esc(pen.purchaseDate || '-')}</div>
+                ${pen.purchasePlace ? `<div class="text-[11px] th-text-sec font-medium">구매처: ${esc(pen.purchasePlace)}</div>` : ''}
+              </div>
+              <div class="text-right">
+                <div class="font-bold font-mono th-text">${formatKRW(pen.price)}</div>
+                <div class="flex justify-end">${getPaymentBadgeHTML(pen)}</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t th-border">
+              ${getAccessoryTagHTML('보증서', pen.warranty)}
+              ${getAccessoryTagHTML('케이스', pen.caseInfo)}
+            </div>
+
+            ${pen.notes ? `
+              <div class="px-3 py-2 rounded-xl th-surface-soft border th-border text-xs th-text-sec leading-relaxed">
+                <span class="text-[10px] font-bold th-text-muted block mb-0.5">펜 비고</span>
+                ${esc(pen.notes)}
+              </div>
+            ` : ''}
+
+            <div class="p-3 rounded-xl th-surface-soft border th-border">
+              <div class="text-[10px] font-semibold th-text-muted uppercase mb-1">잉크 인입 상태</div>
+              ${inkHtml}
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-1">
+              ${pen.inked ? `
+                <button type="button" onclick="confirmCleanPen('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white' : 'th-btn-soft'}">세척완료</button>
+              ` : ''}
+              <button type="button" onclick="openPenModal('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold th-btn-soft">수정</button>
+              <button type="button" onclick="confirmDeletePen('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 bg-red-50">삭제</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /** 잉크 인입 상태 셀: 잉입[YYYY-MM-DD] / 잉크회사 / 잉크명 + 색도트 + 세척필요 */
+    function renderPenInkCellHTML(pen) {
+      if (!pen.inked) {
+        return `<span class="text-xs th-text-muted opacity-70 italic">미잉입 (세척 보관)</span>`;
+      }
+
+      let displayHex = pen.inkColorHex || '#5E72B8';
+      if (pen.linkedInkId) {
+        const foundInk = appData.inks.find(i => i.id === pen.linkedInkId);
+        if (foundInk && foundInk.colorHex) displayHex = foundInk.colorHex;
+      }
+
+      const dateText = pen.inkedDate ? `잉입[${pen.inkedDate}]` : '잉입[날짜미상]';
+      const { needsCleaning, daysElapsed } = pen._cleaning;
+      const inkLabel = [pen.inkBrand, pen.inkName].filter(Boolean).join(' / ') || '잉크 미지정';
+
+      return `
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-xs font-mono font-semibold th-text th-surface px-2 py-0.5 rounded-md border th-border">${esc(dateText)}</span>
+            ${pen.inkedDate ? `<span class="text-[11px] font-mono ${needsCleaning ? 'text-red-600 font-bold' : 'th-text-muted'}">D+${daysElapsed}</span>` : ''}
+            ${needsCleaning ? `
+              <span class="badge-cleaning inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-red-600 text-white shadow-xs">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                세척필요
+              </span>
+            ` : ''}
+          </div>
+          <div class="flex items-center gap-2 text-xs th-text">
+            <span class="w-3 h-3 rounded-full border border-black/20 shrink-0 shadow-xs" style="background-color: ${esc(displayHex)};" title="${esc(displayHex)}"></span>
+            <span class="font-medium truncate">${esc(inkLabel)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 8. 잉크 라이브러리 렌더링
+    // =========================================================================
+
+    function renderInks() {
+      const search = (document.getElementById('inkSearchInput').value || '').trim().toLowerCase();
+      let list = [...appData.inks];
+
+      if (inkFilter !== 'all') {
+        list = list.filter(i => i.status === inkFilter);
+      }
+
+      if (search) {
+        list = list.filter(i => {
+          const hay = [i.brand, i.name, i.colorName, i.colorHex, i.colorDesc, i.purchasePlace, i.installmentCard].join(' ').toLowerCase();
+          return hay.includes(search);
+        });
+      }
+
+      list.sort((a, b) => (b.purchaseDate || '').localeCompare(a.purchaseDate || ''));
+
+      const cardGrid = document.getElementById('inkCardGrid');
+      const tableWrapper = document.getElementById('inkTableWrapper');
+      const tbody = document.getElementById('inkTableBody');
+      const emptyState = document.getElementById('inkEmptyState');
+
+      if (list.length === 0) {
+        cardGrid.classList.add('hidden');
+        tableWrapper.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      const getInkedPensForInk = (ink) => appData.pens.filter(p => p.inked && (
+        p.linkedInkId === ink.id ||
+        (p.inkBrand && p.inkName && p.inkBrand.toLowerCase() === ink.brand.toLowerCase() && p.inkName.toLowerCase() === ink.name.toLowerCase())
+      ));
+
+      if (inkViewMode === 'card') {
+        cardGrid.classList.remove('hidden');
+        tableWrapper.classList.add('hidden');
+
+        cardGrid.innerHTML = list.map(ink => {
+          const usedPens = getInkedPensForInk(ink);
+          const hex = ink.colorHex || '#5E72B8';
+
+          return `
+            <div class="th-card rounded-2xl overflow-hidden flex flex-col justify-between transition">
+              <div>
+                <div class="h-24 relative flex items-end justify-between p-4" style="background: linear-gradient(135deg, ${esc(hex)} 0%, ${esc(hex)}DD 75%, ${esc(hex)}BB 100%);">
+                  <svg class="w-16 h-16 text-white/15 absolute right-3 top-2 pointer-events-none" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                  <span class="px-2.5 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-white text-[11px] font-mono font-semibold tracking-wider">
+                    ${esc(hex.toUpperCase())}
+                  </span>
+                  <div class="bg-white/95 rounded-full shadow-xs">
+                    ${getStatusBadgeHTML(ink.status)}
+                  </div>
+                </div>
+
+                <div class="p-4 space-y-2.5">
+                  <div>
+                    <div class="text-[11px] font-semibold th-text-muted uppercase tracking-wide">${esc(ink.brand)}</div>
+                    <h3 class="text-base font-bold th-text mt-0.5">${esc(ink.name)}</h3>
+                  </div>
+
+                  <div class="flex items-center gap-2 text-xs th-text-sec">
+                    <span class="w-3 h-3 rounded-sm border border-black/15 shrink-0" style="background-color: ${esc(hex)};"></span>
+                    <span class="font-semibold">${esc(ink.colorName || '색상명 미입력')}</span>
+                  </div>
+
+                  ${ink.colorDesc ? `<p class="text-xs th-text-muted leading-relaxed line-clamp-2">${esc(ink.colorDesc)}</p>` : ''}
+
+                  ${usedPens.length > 0 ? `
+                    <div class="pt-1 flex flex-wrap gap-1.5">
+                      ${usedPens.map(p => `
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md th-badge-soft text-[11px] font-medium">
+                          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+                          ${esc(p.brand)} ${esc(p.name)}
+                        </span>
+                      `).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="px-4 py-3 th-surface-soft border-t th-border flex items-end justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span class="text-xs font-mono font-bold th-text">${formatKRW(ink.price)}</span>
+                    <span class="text-[11px] th-text-muted font-mono">${esc(ink.purchaseDate || '-')}</span>
+                    ${ink.purchasePlace ? `<span class="text-[11px] th-text-sec">· ${esc(ink.purchasePlace)}</span>` : ''}
+                  </div>
+                  ${getPaymentBadgeHTML(ink)}
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="openInkModal('${ink.id}')" title="수정" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button type="button" onclick="confirmDeleteInk('${ink.id}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        cardGrid.classList.add('hidden');
+        tableWrapper.classList.remove('hidden');
+
+        tbody.innerHTML = list.map(ink => {
+          const usedPens = getInkedPensForInk(ink);
+          const hex = ink.colorHex || '#5E72B8';
+
+          return `
+            <tr class="th-row">
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl border border-black/15 shadow-inner flex items-center justify-center shrink-0" style="background-color: ${esc(hex)};">
+                    <svg class="w-3.5 h-3.5 text-white/85" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                  </div>
+                  <div>
+                    <div class="text-xs font-mono font-bold th-text">${esc(hex.toUpperCase())}</div>
+                    <div class="text-[11px] th-text-muted">${esc(ink.colorName || '-')}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3.5 px-4">
+                <div class="text-[11px] font-semibold th-text-muted uppercase">${esc(ink.brand)}</div>
+                <div class="text-sm font-bold th-text">${esc(ink.name)}</div>
+                ${ink.colorDesc ? `<div class="text-[11px] th-text-muted mt-0.5 max-w-xs truncate">${esc(ink.colorDesc)}</div>` : ''}
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <div class="text-xs font-mono th-text-muted">${esc(ink.purchaseDate || '-')}</div>
+                <div class="text-sm font-bold font-mono th-text">${formatKRW(ink.price)}</div>
+                ${ink.purchasePlace ? `<div class="text-[11px] th-text-sec mt-0.5">${esc(ink.purchasePlace)}</div>` : ''}
+                ${getPaymentBadgeHTML(ink)}
+              </td>
+              <td class="py-3.5 px-3 text-center whitespace-nowrap">
+                ${getStatusBadgeHTML(ink.status)}
+              </td>
+              <td class="py-3.5 px-4">
+                ${usedPens.length > 0
+                  ? usedPens.map(p => `<div class="text-xs th-text font-medium">• ${esc(p.brand)} ${esc(p.name)}</div>`).join('')
+                  : `<span class="text-xs th-text-muted opacity-60">-</span>`
+                }
+              </td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1">
+                  <button type="button" onclick="openInkModal('${ink.id}')" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition" title="수정">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button type="button" onclick="confirmDeleteInk('${ink.id}')" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition" title="삭제">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // =========================================================================
+    // 9. 할부 · 지출 요약 렌더링 (진행중 vs 할부 끝 분리 집계)
+    // =========================================================================
+
+    function renderFinance() {
+      const allItems = [
+        ...appData.pens.map(p => ({ ...p, _category: '만년필' })),
+        ...appData.inks.map(i => ({ ...i, _category: '잉크' }))
+      ];
+
+      const allInstallments = allItems
+        .filter(item => item.paymentType === 'installment' && Number(item.installmentMonths) > 0)
+        .map(item => ({
+          ...item,
+          _inst: checkInstallmentStatus(item.purchaseDate, item.installmentMonths)
+        }))
+        .sort((a, b) => {
+          const aDone = a._inst.valid && a._inst.isCompleted;
+          const bDone = b._inst.valid && b._inst.isCompleted;
+          if (aDone !== bDone) return aDone ? 1 : -1;
+          return (b.purchaseDate || '').localeCompare(a.purchaseDate || '');
+        });
+
+      const ongoingList = allInstallments.filter(x => !(x._inst.valid && x._inst.isCompleted));
+      const completedList = allInstallments.filter(x => x._inst.valid && x._inst.isCompleted);
+
+      const totalSpent = allItems.reduce((s, x) => s + (Number(x.price) || 0), 0);
+      const totalInstPrice = allInstallments.reduce((s, x) => s + (Number(x.price) || 0), 0);
+      const ongoingAmount = ongoingList.reduce((s, x) => s + (Number(x.price) || 0), 0);
+      const completedAmount = completedList.reduce((s, x) => s + (Number(x.price) || 0), 0);
+
+      const monthlyOngoing = ongoingList.reduce(
+        (s, x) => s + Math.round((Number(x.price) || 0) / Number(x.installmentMonths)),
+        0
+      );
+
+      const instRatio = totalSpent > 0 ? Math.round((totalInstPrice / totalSpent) * 100) : 0;
+      const lumpRatio = totalSpent > 0 ? 100 - instRatio : 0;
+
+      document.getElementById('finMonthlyPayment').textContent = formatKRW(monthlyOngoing);
+      document.getElementById('finOngoingCount').textContent = `${ongoingList.length}건`;
+      document.getElementById('finOngoingAmount').textContent = `진행중 원금 합계 ${formatKRW(ongoingAmount)}`;
+      document.getElementById('finCompletedCount').textContent = `${completedList.length}건`;
+      document.getElementById('finCompletedAmount').textContent = `완납 원금 합계 ${formatKRW(completedAmount)}`;
+      document.getElementById('finPaymentRatio').textContent = `${lumpRatio}% / ${instRatio}%`;
+      document.getElementById('finLumpBar').style.width = `${lumpRatio}%`;
+      document.getElementById('finInstBar').style.width = `${instRatio}%`;
+
+      let displayList = allInstallments;
+      if (financeFilter === 'ongoing') displayList = ongoingList;
+      if (financeFilter === 'completed') displayList = completedList;
+
+      const tbody = document.getElementById('installmentTableBody');
+      const emptyEl = document.getElementById('installmentEmptyState');
+
+      if (displayList.length === 0) {
+        tbody.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+      } else {
+        emptyEl.classList.add('hidden');
+        tbody.innerHTML = displayList.map(item => {
+          const isDone = item._inst.valid && item._inst.isCompleted;
+          const monthly = Math.round((Number(item.price) || 0) / Number(item.installmentMonths));
+          const catBadge = item._category === '만년필'
+            ? 'th-btn-primary'
+            : 'th-badge-soft';
+
+          const statusHtml = isDone
+            ? `
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><polyline points="20 6 9 17 4 12"/></svg>
+                  할부 끝
+                </span>
+                <span class="text-xs th-text-muted line-through">${esc(item.installmentCard || '카드 미입력')} ${item.installmentMonths}개월</span>
+              </div>
+            `
+            : `
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold">
+                  ${item._inst.currentRound}/${item.installmentMonths} 진행중
+                </span>
+                <span class="text-xs font-semibold th-text">${esc(item.installmentCard || '카드 미입력')} · ${item.installmentMonths}개월</span>
+              </div>
+            `;
+
+          return `
+            <tr class="th-row ${isDone ? 'opacity-75' : ''}">
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold ${catBadge}">${item._category}</span>
+              </td>
+              <td class="py-3.5 px-4">
+                <div class="text-[11px] th-text-muted font-semibold">${esc(item.brand)}</div>
+                <div class="text-sm font-bold th-text">${esc(item.name)}</div>
+              </td>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                ${statusHtml}
+              </td>
+              <td class="py-3.5 px-4 font-mono text-xs whitespace-nowrap">
+                <div class="th-text">${esc(item.purchaseDate || '-')}</div>
+                ${item._inst.endDateStr ? `<div class="text-[11px] th-text-muted">종료 ${esc(item._inst.endDateStr)}</div>` : ''}
+              </td>
+              <td class="py-3.5 px-4 text-right font-mono text-sm font-bold th-text whitespace-nowrap">
+                ${formatKRW(item.price)}
+              </td>
+              <td class="py-3.5 px-4 text-right font-mono text-sm whitespace-nowrap">
+                ${isDone
+                  ? `<span class="text-xs font-sans font-semibold text-emerald-700">완납 (₩0)</span>`
+                  : `<span class="font-bold text-amber-700">${formatKRW(monthly)} / 월</span>`
+                }
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      renderBrandStatBars('penBrandStats', appData.pens, '자루');
+      renderBrandStatBars('inkBrandStats', appData.inks, '병');
+    }
+
+    function renderBrandStatBars(containerId, items, unit) {
+      const container = document.getElementById(containerId);
+      if (items.length === 0) {
+        container.innerHTML = `<p class="text-xs th-text-muted py-4 text-center">등록된 데이터가 없습니다.</p>`;
+        return;
+      }
+
+      const map = {};
+      items.forEach(item => {
+        const brand = (item.brand || '기타').trim();
+        if (!map[brand]) map[brand] = { count: 0, spent: 0 };
+        map[brand].count += 1;
+        map[brand].spent += Number(item.price) || 0;
+      });
+
+      const entries = Object.entries(map).sort((a, b) => b[1].count - a[1].count || b[1].spent - a[1].spent);
+      const maxCount = Math.max(...entries.map(e => e[1].count), 1);
+
+      container.innerHTML = entries.map(([brand, data]) => {
+        const pct = Math.round((data.count / maxCount) * 100);
+        return `
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold th-text">${esc(brand)}</span>
+              <span class="font-mono th-text-muted">
+                <strong class="th-text">${data.count}${unit}</strong>
+                <span class="opacity-40 mx-1">|</span>
+                ${formatKRW(data.spent)}
+              </span>
+            </div>
+            <div class="w-full h-2 th-surface rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-300" style="width: ${pct}%; background-color: var(--accent);"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 10. 탭 & 필터 컨트롤
+    // =========================================================================
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      ['pens', 'inks', 'finance'].forEach(t => {
+        const panel = document.getElementById(`tabPanel-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        panel.classList.toggle('hidden', t !== tabName);
+        btn.classList.toggle('active', t === tabName);
+      });
+    }
+
+    function setPenFilter(filterVal) {
+      penFilter = filterVal;
+      document.querySelectorAll('.pen-filter-btn').forEach(btn => {
+        const f = btn.dataset.filter;
+        if (f === 'cleaning') {
+          if (filterVal === 'cleaning') {
+            btn.className = 'pen-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-red-600 text-white border border-red-600 transition flex items-center gap-1.5';
+          } else {
+            btn.className = 'pen-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200/80 hover:bg-red-100 transition flex items-center gap-1.5';
+          }
+        } else if (f === 'limited') {
+          btn.style.outline = filterVal === 'limited' ? '2px solid #F4D06F' : '';
+          btn.style.outlineOffset = filterVal === 'limited' ? '2px' : '';
+        } else {
+          btn.classList.toggle('active', f === filterVal);
+        }
+      });
+      renderPens();
+    }
+
+    function filterByCleaningNeeded() {
+      switchTab('pens');
+      setPenFilter('cleaning');
+      document.getElementById('tabPanel-pens').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetPenFilters() {
+      document.getElementById('penSearchInput').value = '';
+      document.getElementById('penInstFilterSelect').value = 'all';
+      setPenFilter('all');
+    }
+
+    function setInkFilter(filterVal) {
+      inkFilter = filterVal;
+      document.querySelectorAll('.ink-filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filterVal);
+      });
+      renderInks();
+    }
+
+    function setFinanceFilter(filterVal) {
+      financeFilter = filterVal;
+      document.querySelectorAll('.fin-filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.finFilter === filterVal);
+      });
+      renderFinance();
+    }
+
+    function setInkView(mode) {
+      inkViewMode = mode;
+      const cardBtn = document.getElementById('inkViewBtn-card');
+      const tableBtn = document.getElementById('inkViewBtn-table');
+      if (mode === 'card') {
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+      } else {
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+      }
+      renderInks();
+    }
+
+    // =========================================================================
+    // 11. 만년필 모달 CRUD + 골드닙 K 자동 리서치 + 실시간 미리보기
+    // =========================================================================
+
+    const PRESET_NIBS = ['EF', 'F', 'M', 'B', '1.1'];
+
+    function openPenModal(editId = null) {
+      const modal = document.getElementById('penModal');
+      document.getElementById('penForm').reset();
+      document.getElementById('penId').value = '';
+      document.getElementById('penLinkedInkId').value = '';
+      const karatStatus = document.getElementById('aiKaratStatus');
+      karatStatus.classList.add('hidden');
+      karatStatus.textContent = '';
+
+      if (editId) {
+        const pen = appData.pens.find(p => p.id === editId);
+        if (!pen) return;
+
+        document.getElementById('penModalTitle').textContent = '만년필 정보 수정';
+        document.getElementById('penId').value = pen.id;
+        document.getElementById('penBrand').value = pen.brand || '';
+        document.getElementById('penName').value = pen.name || '';
+        document.getElementById('penIsLimited').checked = Boolean(pen.isLimited);
+        document.getElementById('penColorName').value = pen.colorName || '';
+        document.getElementById('penColorHex').value = pen.colorHex || '#2B3440';
+        document.getElementById('penPurchaseDate').value = pen.purchaseDate || '';
+        document.getElementById('penPrice').value = pen.price ? Number(pen.price).toLocaleString('ko-KR') : '';
+        document.getElementById('penPurchasePlace').value = pen.purchasePlace || '';
+        document.getElementById('penWarranty').value = pen.warranty || '';
+        document.getElementById('penCaseInfo').value = pen.caseInfo || '';
+        document.getElementById('penNotes').value = pen.notes || '';
+
+        selectNibMaterial(pen.nibMaterial || 'steel', false);
+        document.getElementById('penNibKarat').value = pen.nibKarat || '';
+
+        if (PRESET_NIBS.includes(pen.nibSize)) {
+          selectNib(pen.nibSize);
+        } else {
+          selectNib('custom');
+          document.getElementById('penCustomNib').value = pen.nibSize || '';
+        }
+
+        selectPenStatus(pen.status || '보관중');
+        setPenPaymentType(pen.paymentType || 'lump');
+        document.getElementById('penInstMonths').value = pen.installmentMonths || '';
+        document.getElementById('penInstCard').value = pen.installmentCard || '';
+
+        setPenInked(Boolean(pen.inked));
+        document.getElementById('penInkedDate').value = pen.inkedDate || '';
+        document.getElementById('penLinkedInkId').value = pen.linkedInkId || '';
+        document.getElementById('penInkBrand').value = pen.inkBrand || '';
+        document.getElementById('penInkName').value = pen.inkName || '';
+        document.getElementById('penInkColorHex').value = pen.inkColorHex || '#5E72B8';
+      } else {
+        document.getElementById('penModalTitle').textContent = '새 만년필 등록';
+        document.getElementById('penPurchaseDate').value = getTodayStr();
+        document.getElementById('penColorHex').value = '#5A67B3';
+        document.getElementById('penIsLimited').checked = false;
+        selectNibMaterial('steel', false);
+        document.getElementById('penNibKarat').value = '';
+        selectNib('F');
+        selectPenStatus('사용중');
+        setPenPaymentType('lump');
+        setPenInked(false);
+        document.getElementById('penInkedDate').value = getTodayStr();
+        document.getElementById('penInkColorHex').value = '#5E72B8';
+      }
+
+      updateLimitedPreview();
+      updateNibFormatPreview();
+      updatePenInstallmentPreview();
+      updatePenCleaningPreview();
+      modal.classList.remove('hidden');
+    }
+
+    function closePenModal() {
+      document.getElementById('penModal').classList.add('hidden');
+    }
+
+    function updateLimitedPreview() {
+      const checked = document.getElementById('penIsLimited').checked;
+      const wrap = document.getElementById('limitedPreviewWrap');
+      wrap.classList.toggle('hidden', !checked);
+      wrap.classList.toggle('flex', checked);
+    }
+
+    function setQuickField(inputId, val) {
+      document.getElementById(inputId).value = val;
+    }
+
+    function setQuickKarat(val) {
+      document.getElementById('penNibKarat').value = val;
+      updateNibFormatPreview();
+    }
+
+    /**
+     * 스틸닙 / 골드닙 선택 핸들러
+     * 골드닙 클릭 시 제조사·펜이름이 이미 입력되어 있고 K값이 비어있으면 자동 리서치 실행
+     */
+    function selectNibMaterial(mat, autoLookup = true) {
+      formPenNibMaterial = mat;
+      const steelBtn = document.getElementById('nibMatSteelBtn');
+      const goldBtn = document.getElementById('nibMatGoldBtn');
+      const karatFields = document.getElementById('goldKaratFields');
+
+      if (mat === 'gold') {
+        goldBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold nib-badge-gold shadow-xs transition';
+        steelBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        karatFields.classList.remove('hidden');
+
+        // 제조사/펜이름이 입력돼 있고 K값이 아직 비어있다면 자동 리서치 트리거
+        if (autoLookup) {
+          const brand = document.getElementById('penBrand').value.trim();
+          const name = document.getElementById('penName').value.trim();
+          const currentKarat = document.getElementById('penNibKarat').value.trim();
+          if ((brand || name) && !currentKarat) {
+            lookupGoldKaratAI();
+          }
+        }
+      } else {
+        steelBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        goldBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        karatFields.classList.add('hidden');
+      }
+      updateNibFormatPreview();
+    }
+
+    function selectNib(val) {
+      formPenNibType = val;
+      document.querySelectorAll('.nib-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.nib === val);
+      });
+      const customWrap = document.getElementById('customNibWrapper');
+      if (val === 'custom') {
+        customWrap.classList.remove('hidden');
+        document.getElementById('penCustomNib').focus();
+      } else {
+        customWrap.classList.add('hidden');
+      }
+      updateNibFormatPreview();
+    }
+
+    function updateNibFormatPreview() {
+      const sizeVal = formPenNibType === 'custom'
+        ? (document.getElementById('penCustomNib').value.trim() || '직접입력')
+        : formPenNibType;
+      const karatVal = formPenNibMaterial === 'gold'
+        ? document.getElementById('penNibKarat').value.trim()
+        : '';
+      document.getElementById('nibFormatPreview').textContent = formatNibLabel(formPenNibMaterial, sizeVal, karatVal);
+    }
+
+    /**
+     * 내장 만년필 골드닙 K 사전 검색 (오프라인 폴백)
+     */
+    function searchLocalPenKaratDict(queryStr) {
+      const q = queryStr.toLowerCase();
+      for (const entry of FAMOUS_PEN_NIB_KARAT_DICT) {
+        if (entry.keywords.some(k => q.includes(k.toLowerCase()))) {
+          return entry;
+        }
+      }
+      return null;
+    }
+
+    /**
+     * 골드닙 금 함량(몇K인지) AI 리서치 및 자동 적용
+     */
+    async function lookupGoldKaratAI() {
+      const brand = document.getElementById('penBrand').value.trim();
+      const name = document.getElementById('penName').value.trim();
+      const combined = [brand, name].filter(Boolean).join(' ');
+
+      if (!combined) {
+        showToast('제조사 또는 펜 이름을 먼저 입력해 주세요.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('aiKaratBtn');
+      const btnText = document.getElementById('aiKaratBtnText');
+      const statusEl = document.getElementById('aiKaratStatus');
+
+      btn.disabled = true;
+      btnText.textContent = '리서치 중...';
+      statusEl.classList.remove('hidden');
+      statusEl.textContent = `'${combined}' 모델의 골드닙 금 함량(K)을 리서치하고 있습니다...`;
+
+      const apiKey = ""; // 런타임 자동 주입
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{
+          parts: [{
+            text: `다음 만년필 모델의 기본 골드닙 금 함량(예: "14k", "18k", "21k")과 짧은 한국어 근거(35자 이내)를 알려주세요. 만약 해당 모델이 일반적으로 스틸닙이더라도 골드닙 에디션이나 브랜드 표준 금 함량을 기준으로 가장 대표적인 K값(소문자 k 포함, 예: "14k")을 반환해 주세요.\n만년필 모델: "${combined}"`
+          }]
+        }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              karat: { type: "STRING", description: "14k, 18k, 21k 형식의 금 함량 문자열" },
+              note: { type: "STRING", description: "짧은 한국어 설명" }
+            },
+            required: ["karat", "note"]
+          }
+        }
+      };
+
+      try {
+        const result = await fetchGeminiWithBackoff(apiUrl, payload, 2);
+        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          const parsed = JSON.parse(text);
+          if (parsed.karat) {
+            const cleanK = parsed.karat.trim().toLowerCase();
+            document.getElementById('penNibKarat').value = cleanK;
+            updateNibFormatPreview();
+            statusEl.textContent = `AI 리서치 자동 적용: ${cleanK} — ${parsed.note || ''}`;
+            showToast(`골드닙 함량 자동 적용 완료 (${cleanK})`);
+            return;
+          }
+        }
+        throw new Error('유효한 응답 없음');
+      } catch (err) {
+        const localMatch = searchLocalPenKaratDict(combined);
+        if (localMatch) {
+          document.getElementById('penNibKarat').value = localMatch.karat;
+          updateNibFormatPreview();
+          statusEl.textContent = `내장 만년필 사전 자동 적용: ${localMatch.karat} (${localMatch.note})`;
+          showToast(`골드닙 함량 자동 적용 (${localMatch.karat})`);
+        } else {
+          statusEl.textContent = '모델의 정확한 K값을 찾지 못했습니다. 위 버튼(14k/18k/21k)이나 입력란에 직접 입력해 주세요.';
+          showToast('자동 조회 실패: K값을 직접 선택해 주세요.', 'error');
+        }
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'AI 몇K 자동 조회';
+      }
+    }
+
+    function selectPenStatus(status) {
+      formPenStatus = status;
+      document.querySelectorAll('.pen-status-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === status);
+      });
+    }
+
+    function setPenPaymentType(type) {
+      formPenPaymentType = type;
+      const lumpBtn = document.getElementById('penPayLumpBtn');
+      const instBtn = document.getElementById('penPayInstBtn');
+      const fields = document.getElementById('penInstallmentFields');
+      if (type === 'installment') {
+        instBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        lumpBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.remove('hidden');
+      } else {
+        lumpBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        instBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.add('hidden');
+      }
+      updatePenInstallmentPreview();
+    }
+
+    function renderInstallmentPreviewBox(boxId, isInst, dateStr, monthsVal) {
+      const box = document.getElementById(boxId);
+      if (!isInst || !dateStr || !monthsVal || Number(monthsVal) < 2) {
+        box.classList.add('hidden');
+        return;
+      }
+      const st = checkInstallmentStatus(dateStr, monthsVal);
+      if (!st.valid) {
+        box.classList.add('hidden');
+        return;
+      }
+      box.classList.remove('hidden');
+      if (st.isCompleted) {
+        box.className = 'px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700';
+        box.textContent = `✓ 구입일로부터 ${st.totalMonths}개월이 경과(${st.endDateStr} 종료)하여 자동으로 [할부 끝] 표기됩니다.`;
+      } else {
+        box.className = 'px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+        box.textContent = `• 현재 ${st.currentRound}/${st.totalMonths}회차 진행중 (할부 종료 예정일: ${st.endDateStr})`;
+      }
+    }
+
+    function updatePenInstallmentPreview() {
+      renderInstallmentPreviewBox(
+        'penInstPreview',
+        formPenPaymentType === 'installment',
+        document.getElementById('penPurchaseDate').value,
+        document.getElementById('penInstMonths').value
+      );
+    }
+
+    function setPenInked(isInked) {
+      formPenInked = isInked;
+      const noBtn = document.getElementById('penInkedNoBtn');
+      const yesBtn = document.getElementById('penInkedYesBtn');
+      const fields = document.getElementById('penInkedFields');
+      if (isInked) {
+        yesBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold th-btn-primary shadow-xs transition';
+        noBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.remove('hidden');
+        if (!document.getElementById('penInkedDate').value) {
+          document.getElementById('penInkedDate').value = getTodayStr();
+        }
+      } else {
+        noBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        yesBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.add('hidden');
+      }
+      updatePenCleaningPreview();
+    }
+
+    function setInkedDateToday() {
+      document.getElementById('penInkedDate').value = getTodayStr();
+      updatePenCleaningPreview();
+    }
+
+    function updatePenCleaningPreview() {
+      const box = document.getElementById('penCleaningPreview');
+      const txt = document.getElementById('penCleaningPreviewText');
+      if (!formPenInked) {
+        box.classList.add('hidden');
+        return;
+      }
+      const dateStr = document.getElementById('penInkedDate').value;
+      const { needsCleaning, daysElapsed } = checkCleaningStatus(dateStr);
+      if (needsCleaning) {
+        txt.textContent = `잉입일로부터 ${daysElapsed}일(달력상 2개월 이상)이 경과했습니다. 저장 시 [세척필요] 알림이 표시됩니다.`;
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function savePen(e) {
+      e.preventDefault();
+      const id = document.getElementById('penId').value;
+      const nibSize = formPenNibType === 'custom'
+        ? (document.getElementById('penCustomNib').value.trim() || '직접입력')
+        : formPenNibType;
+
+      const nibKarat = formPenNibMaterial === 'gold'
+        ? document.getElementById('penNibKarat').value.trim().toLowerCase()
+        : '';
+
+      const instMonths = formPenPaymentType === 'installment'
+        ? (parseInt(document.getElementById('penInstMonths').value, 10) || 2)
+        : null;
+      const instCard = formPenPaymentType === 'installment'
+        ? document.getElementById('penInstCard').value.trim()
+        : '';
+
+      const penObj = {
+        id: id || uid('pen'),
+        brand: document.getElementById('penBrand').value.trim(),
+        name: document.getElementById('penName').value.trim(),
+        isLimited: document.getElementById('penIsLimited').checked,
+        nibMaterial: formPenNibMaterial,
+        nibKarat,
+        nibSize,
+        colorName: document.getElementById('penColorName').value.trim(),
+        colorHex: document.getElementById('penColorHex').value,
+        status: formPenStatus,
+        purchaseDate: document.getElementById('penPurchaseDate').value,
+        price: parsePriceValue(document.getElementById('penPrice').value),
+        purchasePlace: document.getElementById('penPurchasePlace').value.trim(),
+        warranty: document.getElementById('penWarranty').value.trim(),
+        caseInfo: document.getElementById('penCaseInfo').value.trim(),
+        notes: document.getElementById('penNotes').value.trim(),
+        paymentType: formPenPaymentType,
+        installmentMonths: instMonths,
+        installmentCard: instCard,
+        inked: formPenInked,
+        inkedDate: formPenInked ? document.getElementById('penInkedDate').value : '',
+        linkedInkId: formPenInked ? document.getElementById('penLinkedInkId').value : '',
+        inkBrand: formPenInked ? document.getElementById('penInkBrand').value.trim() : '',
+        inkName: formPenInked ? document.getElementById('penInkName').value.trim() : '',
+        inkColorHex: formPenInked ? document.getElementById('penInkColorHex').value : '#5E72B8'
+      };
+
+      if (id) {
+        const idx = appData.pens.findIndex(p => p.id === id);
+        if (idx !== -1) appData.pens[idx] = penObj;
+        showToast('만년필 정보가 수정되었습니다.');
+      } else {
+        appData.pens.unshift(penObj);
+        showToast('새 만년필이 등록되었습니다.');
+      }
+
+      saveData();
+      renderAll();
+      closePenModal();
+    }
+
+    function confirmCleanPen(penId) {
+      const pen = appData.pens.find(p => p.id === penId);
+      if (!pen) return;
+      openConfirmModal({
+        title: '세척 완료 처리',
+        message: `[${pen.brand} ${pen.name}]의 잉크 인입 정보를 초기화하고 '보관중' 상태로 변경할까요?`,
+        confirmText: '세척 완료 처리',
+        danger: false,
+        onConfirm: () => {
+          pen.inked = false;
+          pen.inkedDate = '';
+          pen.linkedInkId = '';
+          pen.inkBrand = '';
+          pen.inkName = '';
+          pen.status = '보관중';
+          saveData();
+          renderAll();
+          showToast(`'${pen.name}' 세척 완료 처리되었습니다.`);
+        }
+      });
+    }
+
+    function confirmDeletePen(penId) {
+      const pen = appData.pens.find(p => p.id === penId);
+      if (!pen) return;
+      openConfirmModal({
+        title: '만년필 삭제',
+        message: `[${pen.brand} ${pen.name}] 항목을 삭제하시겠습니까?`,
+        confirmText: '삭제하기',
+        danger: true,
+        onConfirm: () => {
+          appData.pens = appData.pens.filter(p => p.id !== penId);
+          saveData();
+          renderAll();
+          showToast('만년필이 삭제되었습니다.');
+        }
+      });
+    }
+
+    // =========================================================================
+    // 12. 잉크 불러오기 팝업
+    // =========================================================================
+
+    function openInkPickerModal() {
+      document.getElementById('inkPickerSearch').value = '';
+      renderInkPickerList();
+      document.getElementById('inkPickerModal').classList.remove('hidden');
+    }
+
+    function closeInkPickerModal() {
+      document.getElementById('inkPickerModal').classList.add('hidden');
+    }
+
+    function renderInkPickerList() {
+      const query = (document.getElementById('inkPickerSearch').value || '').trim().toLowerCase();
+      const container = document.getElementById('inkPickerList');
+
+      const filtered = appData.inks.filter(ink => {
+        if (!query) return true;
+        return [ink.brand, ink.name, ink.colorName].join(' ').toLowerCase().includes(query);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="py-8 text-center text-xs th-text-muted">불러올 수 있는 잉크가 없습니다.<br/>먼저 잉크 라이브러리에 잉크를 등록해 주세요.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(ink => `
+        <button type="button" onclick="pickInkForPen('${ink.id}')" class="w-full text-left p-3 rounded-xl border th-border hover:opacity-90 th-surface-soft transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl border border-black/15 shrink-0 shadow-inner" style="background-color: ${esc(ink.colorHex || '#5E72B8')};"></div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[11px] font-semibold th-text-muted truncate">${esc(ink.brand)}</div>
+            <div class="text-sm font-bold th-text truncate">${esc(ink.name)}</div>
+          </div>
+          <span class="text-[11px] font-mono th-text-muted shrink-0">${esc((ink.colorHex || '').toUpperCase())}</span>
+        </button>
+      `).join('');
+    }
+
+    function pickInkForPen(inkId) {
+      const ink = appData.inks.find(i => i.id === inkId);
+      if (!ink) return;
+      document.getElementById('penLinkedInkId').value = ink.id;
+      document.getElementById('penInkBrand').value = ink.brand;
+      document.getElementById('penInkName').value = ink.name;
+      document.getElementById('penInkColorHex').value = ink.colorHex || '#5E72B8';
+      closeInkPickerModal();
+      showToast(`'${ink.brand} - ${ink.name}' 잉크를 불러왔습니다.`);
+    }
+
+    // =========================================================================
+    // 13. 잉크 모달 & AI 색코드 조회 (Gemini API + 내장 사전 폴백)
+    // =========================================================================
+
+    function openInkModal(editId = null) {
+      const modal = document.getElementById('inkModal');
+      document.getElementById('inkForm').reset();
+      document.getElementById('inkId').value = '';
+      const statusEl = document.getElementById('aiLookupStatus');
+      statusEl.classList.add('hidden');
+      statusEl.textContent = '';
+
+      if (editId) {
+        const ink = appData.inks.find(i => i.id === editId);
+        if (!ink) return;
+        document.getElementById('inkModalTitle').textContent = '잉크 정보 수정';
+        document.getElementById('inkId').value = ink.id;
+        document.getElementById('inkBrand').value = ink.brand || '';
+        document.getElementById('inkName').value = ink.name || '';
+        document.getElementById('inkColorName').value = ink.colorName || '';
+        document.getElementById('inkColorDesc').value = ink.colorDesc || '';
+        applyInkSwatchColor(ink.colorHex || '#5E72B8');
+
+        selectInkStatus(ink.status || '보관중');
+        document.getElementById('inkPurchaseDate').value = ink.purchaseDate || '';
+        document.getElementById('inkPrice').value = ink.price ? Number(ink.price).toLocaleString('ko-KR') : '';
+        document.getElementById('inkPurchasePlace').value = ink.purchasePlace || '';
+        setInkPaymentType(ink.paymentType || 'lump');
+        document.getElementById('inkInstMonths').value = ink.installmentMonths || '';
+        document.getElementById('inkInstCard').value = ink.installmentCard || '';
+      } else {
+        document.getElementById('inkModalTitle').textContent = '새 잉크 등록';
+        document.getElementById('inkPurchaseDate').value = getTodayStr();
+        applyInkSwatchColor('#5E72B8');
+        selectInkStatus('보관중');
+        setInkPaymentType('lump');
+      }
+
+      updateInkInstallmentPreview();
+      modal.classList.remove('hidden');
+    }
+
+    function closeInkModal() {
+      document.getElementById('inkModal').classList.add('hidden');
+    }
+
+    function applyInkSwatchColor(hex) {
+      const normalized = /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex.toUpperCase() : '#5E72B8';
+      document.getElementById('inkSwatchPreview').style.backgroundColor = normalized;
+      document.getElementById('inkColorHexText').value = normalized;
+      document.getElementById('inkColorPicker').value = normalized;
+    }
+
+    function syncHexFromText(val) {
+      let v = val.trim();
+      if (v && !v.startsWith('#')) v = '#' + v;
+      if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+        document.getElementById('inkSwatchPreview').style.backgroundColor = v;
+        document.getElementById('inkColorPicker').value = v;
+      }
+    }
+
+    function syncHexFromPicker(val) {
+      document.getElementById('inkSwatchPreview').style.backgroundColor = val;
+      document.getElementById('inkColorHexText').value = val.toUpperCase();
+    }
+
+    function selectInkStatus(status) {
+      formInkStatus = status;
+      document.querySelectorAll('.ink-status-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === status);
+      });
+    }
+
+    function setInkPaymentType(type) {
+      formInkPaymentType = type;
+      const lumpBtn = document.getElementById('inkPayLumpBtn');
+      const instBtn = document.getElementById('inkPayInstBtn');
+      const fields = document.getElementById('inkInstallmentFields');
+      if (type === 'installment') {
+        instBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        lumpBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.remove('hidden');
+      } else {
+        lumpBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition';
+        instBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition';
+        fields.classList.add('hidden');
+      }
+      updateInkInstallmentPreview();
+    }
+
+    function updateInkInstallmentPreview() {
+      renderInstallmentPreviewBox(
+        'inkInstPreview',
+        formInkPaymentType === 'installment',
+        document.getElementById('inkPurchaseDate').value,
+        document.getElementById('inkInstMonths').value
+      );
+    }
+
+    function searchLocalInkDictionary(queryStr) {
+      const q = queryStr.toLowerCase();
+      for (const entry of FAMOUS_INK_DICTIONARY) {
+        if (entry.keywords.some(k => q.includes(k.toLowerCase()))) return entry;
+      }
+      return null;
+    }
+
+    async function fetchGeminiWithBackoff(url, payload, maxRetries = 3) {
+      let delay = 1000;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) return await res.json();
+          if ((res.status === 429 || res.status >= 500) && attempt < maxRetries) {
+            await new Promise(r => setTimeout(r, delay));
+            delay *= 2;
+            continue;
+          }
+          throw new Error(`HTTP ${res.status}`);
+        } catch (err) {
+          if (attempt < maxRetries) {
+            await new Promise(r => setTimeout(r, delay));
+            delay *= 2;
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    async function lookupInkColorAI() {
+      const brand = document.getElementById('inkBrand').value.trim();
+      const name = document.getElementById('inkName').value.trim();
+      const colorName = document.getElementById('inkColorName').value.trim();
+
+      const combinedQuery = [brand, name, colorName].filter(Boolean).join(' ');
+      if (!combinedQuery) {
+        showToast('제조사, 잉크 이름 또는 색상명을 먼저 입력해 주세요.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('aiColorBtn');
+      const btnText = document.getElementById('aiColorBtnText');
+      const statusEl = document.getElementById('aiLookupStatus');
+
+      btn.disabled = true;
+      btnText.textContent = '리서치 중...';
+      statusEl.classList.remove('hidden');
+      statusEl.textContent = 'AI가 실제 만년필 잉크 발색 색상을 조회하고 있습니다...';
+
+      const apiKey = ""; // 런타임 자동 주입
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{
+          parts: [{
+            text: `다음 만년필 잉크 또는 색상의 실제 대표적인 발색 HEX 색상 코드(#RRGGBB), 한국어 짧은 색상명(10자 이내), 한국어 발색 특징 한 줄 설명(40자 이내)을 알려주세요.\n대상: "${combinedQuery}"`
+          }]
+        }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              hex: { type: "STRING", description: "#RRGGBB 형식 HEX 코드" },
+              colorName: { type: "STRING", description: "짧은 한국어 색상 이름" },
+              description: { type: "STRING", description: "잉크 발색 특징 한 줄 한국어 설명" }
+            },
+            required: ["hex", "colorName", "description"]
+          }
+        }
+      };
+
+      try {
+        const result = await fetchGeminiWithBackoff(apiUrl, payload, 2);
+        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          const parsed = JSON.parse(text);
+          if (parsed.hex && /^#[0-9A-Fa-f]{6}$/.test(parsed.hex.trim())) {
+            applyInkSwatchColor(parsed.hex.trim());
+            if (!colorName && parsed.colorName) {
+              document.getElementById('inkColorName').value = parsed.colorName;
+            }
+            if (parsed.description) {
+              document.getElementById('inkColorDesc').value = parsed.description;
+            }
+            statusEl.textContent = `AI 조회 완료: ${parsed.hex.toUpperCase()} (${parsed.colorName})`;
+            showToast(`AI 색코드 조회 완료 (${parsed.hex.toUpperCase()})`);
+            return;
+          }
+        }
+        throw new Error('유효한 응답 없음');
+      } catch (err) {
+        const localMatch = searchLocalInkDictionary(combinedQuery);
+        if (localMatch) {
+          applyInkSwatchColor(localMatch.hex);
+          if (!colorName) document.getElementById('inkColorName').value = localMatch.name;
+          document.getElementById('inkColorDesc').value = localMatch.desc;
+          statusEl.textContent = `내장 잉크 사전 매칭: ${localMatch.hex} (${localMatch.name})`;
+          showToast(`잉크 사전 매칭 완료 (${localMatch.hex})`);
+        } else {
+          statusEl.textContent = 'AI 조회에 실패했습니다. 컬러 피커나 HEX 코드를 직접 입력해 주세요.';
+          showToast('자동 조회 실패: 컬러 피커를 이용해 주세요.', 'error');
+        }
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'AI 색코드 조회';
+      }
+    }
+
+    function saveInk(e) {
+      e.preventDefault();
+      const id = document.getElementById('inkId').value;
+
+      let hexVal = document.getElementById('inkColorHexText').value.trim();
+      if (hexVal && !hexVal.startsWith('#')) hexVal = '#' + hexVal;
+      if (!/^#[0-9A-Fa-f]{6}$/.test(hexVal)) {
+        hexVal = document.getElementById('inkColorPicker').value || '#5E72B8';
+      }
+
+      const instMonths = formInkPaymentType === 'installment'
+        ? (parseInt(document.getElementById('inkInstMonths').value, 10) || 2)
+        : null;
+      const instCard = formInkPaymentType === 'installment'
+        ? document.getElementById('inkInstCard').value.trim()
+        : '';
+
+      const inkObj = {
+        id: id || uid('ink'),
+        brand: document.getElementById('inkBrand').value.trim(),
+        name: document.getElementById('inkName').value.trim(),
+        colorName: document.getElementById('inkColorName').value.trim(),
+        colorHex: hexVal.toUpperCase(),
+        colorDesc: document.getElementById('inkColorDesc').value.trim(),
+        status: formInkStatus,
+        purchaseDate: document.getElementById('inkPurchaseDate').value,
+        price: parsePriceValue(document.getElementById('inkPrice').value),
+        purchasePlace: document.getElementById('inkPurchasePlace').value.trim(),
+        paymentType: formInkPaymentType,
+        installmentMonths: instMonths,
+        installmentCard: instCard
+      };
+
+      if (id) {
+        const idx = appData.inks.findIndex(i => i.id === id);
+        if (idx !== -1) appData.inks[idx] = inkObj;
+        appData.pens.forEach(p => {
+          if (p.linkedInkId === id) {
+            p.inkBrand = inkObj.brand;
+            p.inkName = inkObj.name;
+            p.inkColorHex = inkObj.colorHex;
+          }
+        });
+        showToast('잉크 정보가 수정되었습니다.');
+      } else {
+        appData.inks.unshift(inkObj);
+        showToast('새 잉크가 라이브러리에 등록되었습니다.');
+      }
+
+      saveData();
+      renderAll();
+      closeInkModal();
+    }
+
+    function confirmDeleteInk(inkId) {
+      const ink = appData.inks.find(i => i.id === inkId);
+      if (!ink) return;
+      openConfirmModal({
+        title: '잉크 삭제',
+        message: `[${ink.brand} - ${ink.name}] 잉크를 라이브러리에서 삭제할까요?`,
+        confirmText: '삭제하기',
+        danger: true,
+        onConfirm: () => {
+          appData.inks = appData.inks.filter(i => i.id !== inkId);
+          saveData();
+          renderAll();
+          showToast('잉크가 삭제되었습니다.');
+        }
+      });
+    }
+
+    // =========================================================================
+    // 14. JSON 백업 / 복원 / 샘플 초기화
+    // =========================================================================
+
+    function toggleDataMenu(forceState) {
+      const menu = document.getElementById('dataMenuDropdown');
+      if (typeof forceState === 'boolean') {
+        menu.classList.toggle('hidden', !forceState);
+      } else {
+        menu.classList.toggle('hidden');
+      }
+    }
+
+    function exportJSON() {
+      const dataStr = JSON.stringify(appData, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fountain_pen_archive_${getTodayStr()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('JSON 백업 파일이 다운로드되었습니다.');
+    }
+
+    function importJSON(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed || !Array.isArray(parsed.pens) || !Array.isArray(parsed.inks)) {
+            throw new Error('형식 오류');
+          }
+          appData = normalizeLoadedData(parsed);
+          saveData();
+          renderAll();
+          showToast(`백업 불러오기 완료 (펜 ${parsed.pens.length}자루, 잉크 ${parsed.inks.length}병)`);
+        } catch (err) {
+          showToast('올바른 JSON 백업 파일이 아닙니다.', 'error');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function confirmResetSample() {
+      openConfirmModal({
+        title: '초기 샘플 데이터 복원',
+        message: '현재 저장된 만년필과 잉크 데이터가 초기화되고 기본 샘플(만년필 5종, 잉크 5종)로 복원됩니다. 계속할까요?',
+        confirmText: '샘플 복원',
+        danger: true,
+        onConfirm: () => {
+          appData = createSampleData();
+          saveData();
+          resetPenFilters();
+          setInkFilter('all');
+          setFinanceFilter('all');
+          renderAll();
+          showToast('초기 샘플 데이터가 복원되었습니다.');
+        }
+      });
+    }
+
+    // =========================================================================
+    // 15. 커스텀 확인 모달 & 토스트 알림
+    // =========================================================================
+
+    let confirmCallback = null;
+
+    function openConfirmModal({ title, message, confirmText = '확인', danger = false, onConfirm }) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      const actionBtn = document.getElementById('confirmActionBtn');
+      const iconBox = document.getElementById('confirmIconBox');
+
+      actionBtn.textContent = confirmText;
+      if (danger) {
+        actionBtn.className = 'px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition';
+        iconBox.className = 'w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0';
+      } else {
+        actionBtn.className = 'px-4 py-2 text-xs font-semibold th-btn-primary rounded-xl transition';
+        iconBox.className = 'w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0';
+      }
+
+      confirmCallback = onConfirm;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      confirmCallback = null;
+    }
+
+    document.getElementById('confirmActionBtn').addEventListener('click', () => {
+      if (typeof confirmCallback === 'function') confirmCallback();
+      closeConfirmModal();
+    });
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const styleAttr = type === 'error'
+        ? 'background-color: #B91C1C; color: #FFFFFF;'
+        : 'background-color: var(--accent); color: var(--accent-text);';
+
+      toast.className = 'toast-enter pointer-events-auto px-4 py-3 rounded-xl shadow-lg text-xs font-medium flex items-center gap-2';
+      toast.setAttribute('style', styleAttr);
+      toast.innerHTML = `
+        <span class="w-1.5 h-1.5 rounded-full ${type === 'error' ? 'bg-red-200' : 'bg-emerald-300'} shrink-0"></span>
+        <span>${esc(message)}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(6px)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 220);
+      }, 2800);
+    }
+
+    // =========================================================================
+    // 16. 글로벌 이벤트 & 초기화
+    // =========================================================================
+
+    document.addEventListener('click', (e) => {
+      const wrapper = document.getElementById('dataMenuWrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        toggleDataMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!document.getElementById('confirmModal').classList.contains('hidden')) {
+          closeConfirmModal();
+        } else if (!document.getElementById('inkPickerModal').classList.contains('hidden')) {
+          closeInkPickerModal();
+        } else if (!document.getElementById('penModal').classList.contains('hidden')) {
+          closePenModal();
+        } else if (!document.getElementById('inkModal').classList.contains('hidden')) {
+          closeInkModal();
+        }
+      }
+    });
+
+    function initApp() {
+      try {
+        document.getElementById('todayDateLabel').textContent = `기준일 ${getTodayStr()}`;
+        loadSavedTheme();
+        loadData();
+        renderAll();
+      } catch (err) {
+        console.error('초기화 중 오류가 발생했습니다:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
