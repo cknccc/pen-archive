@@ -434,6 +434,18 @@
       border: 1px solid rgba(15, 23, 42, 0.18);
       border-radius: 0.5rem;
     }
+
+    /* 긴 URL(타오바오 링크 등)이 표 가로폭을 밀어 수정 버튼을 가리지 않도록 강제 줄바꿈 */
+    .note-text-box {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: pre-line;
+    }
+
+    /* 빠른 수정 모드 활성 행 강조 */
+    .quick-edit-row {
+      background-color: var(--bg-surface-soft);
+    }
   </style>
 </head>
 <body class="min-h-screen font-sans">
@@ -496,26 +508,33 @@
 
       <!-- 우측 액션 버튼 -->
       <div class="order-2 lg:order-3 flex items-center gap-1.5 sm:gap-2">
-        <!-- 데이터 관리 드롭다운 -->
+        <!-- JSON / 데이터 관리 드롭다운 -->
         <div class="relative" id="dataMenuWrapper">
-          <button type="button" onclick="toggleDataMenu()" class="th-header-btn inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium rounded-xl transition" title="백업 및 데이터 관리">
+          <button type="button" onclick="toggleDataMenu()" class="th-header-btn inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium rounded-xl transition" title="JSON 편집 및 데이터 백업">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="8" y1="13" x2="16" y2="13"/>
+              <line x1="8" y1="17" x2="13" y2="17"/>
             </svg>
-            <span class="hidden sm:inline">데이터</span>
+            <span class="hidden sm:inline">JSON / 데이터</span>
           </button>
-          <div id="dataMenuDropdown" class="hidden absolute right-0 mt-2 w-48 th-modal rounded-xl py-1.5 z-40">
+          <div id="dataMenuDropdown" class="hidden absolute right-0 mt-2 w-56 th-modal rounded-xl py-1.5 z-40">
+            <button type="button" onclick="openJsonEditorModal(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2.5 text-xs font-semibold th-accent-text hover:opacity-80 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              JSON 데이터 직접 편집
+            </button>
             <button type="button" onclick="exportJSON(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs th-text hover:opacity-80 flex items-center gap-2">
-              <svg class="w-3.5 h-3.5 th-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-              JSON 백업 내보내기
+              <svg class="w-3.5 h-3.5 th-text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              JSON 파일 생성 (.json 저장)
             </button>
             <button type="button" onclick="document.getElementById('importFileInput').click(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs th-text hover:opacity-80 flex items-center gap-2">
-              <svg class="w-3.5 h-3.5 th-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              <svg class="w-3.5 h-3.5 th-text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
               JSON 파일 불러오기
             </button>
             <div class="my-1 border-t th-border"></div>
             <button type="button" onclick="confirmResetSample(); toggleDataMenu(false);" class="w-full text-left px-3.5 py-2 text-xs text-amber-700 hover:bg-amber-50 flex items-center gap-2">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               초기 샘플 복원
             </button>
           </div>
@@ -668,7 +687,7 @@
 
           <!-- 검색 & 할부 필터 & 정렬 -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <div class="relative flex-1 sm:w-60">
+            <div class="relative flex-1 sm:w-56">
               <svg class="w-4 h-4 th-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
               <input type="text" id="penSearchInput" oninput="renderPens()" placeholder="펜, 닙(14k), 구매처, 잉크, 비고 검색..." class="th-input-soft w-full pl-9 pr-3 py-2 text-xs rounded-xl" />
             </div>
@@ -688,6 +707,23 @@
               <option value="priceAsc">구입가 낮은순</option>
               <option value="inkDateAsc">잉입일 오래된순</option>
             </select>
+
+            <button type="button" id="quickEditPenBtn" onclick="togglePenQuickEditMode()" class="th-badge-soft inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span id="quickEditPenBtnText">빠른 수정 모드</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 빠른 수정 모드 활성 시 안내 배너 -->
+        <div id="penQuickEditBanner" class="hidden pt-2.5 border-t th-border flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-2 th-accent-text font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>빠른 수정 모드 활성화됨 — 표/카드 안에서 수정하면 즉시 자동 저장됩니다. (할부·잉입 변경은 각 행의 [상세 수정] 클릭)</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="exportJSON()" class="px-3 py-1.5 rounded-lg text-[11px] font-semibold th-badge-soft hover:opacity-85 transition">수정된 JSON 파일 저장</button>
+            <button type="button" onclick="togglePenQuickEditMode(false)" class="px-3 py-1.5 rounded-lg text-[11px] font-semibold th-btn-primary transition">수정 완료</button>
           </div>
         </div>
       </div>
@@ -727,29 +763,47 @@
     <!-- TAB 2: 잉크 라이브러리 -->
     <!-- ========================================================= -->
     <section id="tabPanel-inks" class="hidden space-y-4">
-      <div class="th-card rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button type="button" data-filter="all" onclick="setInkFilter('all')" class="ink-filter-btn th-pill active px-3 py-1.5 rounded-xl text-xs transition">전체</button>
-          <button type="button" data-filter="사용중" onclick="setInkFilter('사용중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">사용중</button>
-          <button type="button" data-filter="보관중" onclick="setInkFilter('보관중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">보관중</button>
-          <button type="button" data-filter="잘안씀" onclick="setInkFilter('잘안씀')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">잘안씀</button>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <div class="relative flex-1 md:w-64">
-            <svg class="w-4 h-4 th-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="inkSearchInput" oninput="renderInks()" placeholder="제조사, 잉크명, 색상, 구매처, HEX 검색..." class="th-input-soft w-full pl-9 pr-3 py-2 text-xs rounded-xl" />
+      <div class="th-card rounded-2xl p-4 space-y-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" data-filter="all" onclick="setInkFilter('all')" class="ink-filter-btn th-pill active px-3 py-1.5 rounded-xl text-xs transition">전체</button>
+            <button type="button" data-filter="사용중" onclick="setInkFilter('사용중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">사용중</button>
+            <button type="button" data-filter="보관중" onclick="setInkFilter('보관중')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">보관중</button>
+            <button type="button" data-filter="잘안씀" onclick="setInkFilter('잘안씀')" class="ink-filter-btn th-pill px-3 py-1.5 rounded-xl text-xs transition">잘안씀</button>
           </div>
 
-          <div class="inline-flex th-surface p-1 rounded-xl border shrink-0">
-            <button type="button" id="inkViewBtn-card" onclick="setInkView('card')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-              <span class="hidden sm:inline">카드</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 md:w-60">
+              <svg class="w-4 h-4 th-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="inkSearchInput" oninput="renderInks()" placeholder="제조사, 잉크명, 색상, 구매처, HEX 검색..." class="th-input-soft w-full pl-9 pr-3 py-2 text-xs rounded-xl" />
+            </div>
+
+            <button type="button" id="quickEditInkBtn" onclick="toggleInkQuickEditMode()" class="th-badge-soft inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span id="quickEditInkBtnText">빠른 수정 모드</span>
             </button>
-            <button type="button" id="inkViewBtn-table" onclick="setInkView('table')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-              <span class="hidden sm:inline">테이블</span>
-            </button>
+
+            <div class="inline-flex th-surface p-1 rounded-xl border shrink-0">
+              <button type="button" id="inkViewBtn-card" onclick="setInkView('card')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span class="hidden sm:inline">카드</span>
+              </button>
+              <button type="button" id="inkViewBtn-table" onclick="setInkView('table')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <span class="hidden sm:inline">테이블</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="inkQuickEditBanner" class="hidden pt-2.5 border-t th-border flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-2 th-accent-text font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>잉크 빠른 수정 모드 활성화됨 — 값을 고치면 즉시 자동 저장됩니다. (AI 색코드 조회·할부는 [상세 수정] 클릭)</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="exportJSON()" class="px-3 py-1.5 rounded-lg text-[11px] font-semibold th-badge-soft hover:opacity-85 transition">수정된 JSON 파일 저장</button>
+            <button type="button" onclick="toggleInkQuickEditMode(false)" class="px-3 py-1.5 rounded-lg text-[11px] font-semibold th-btn-primary transition">수정 완료</button>
           </div>
         </div>
       </div>
@@ -838,6 +892,7 @@
                 <th class="py-3 px-4">구입일 (종료 예정)</th>
                 <th class="py-3 px-4 text-right">총 구입가</th>
                 <th class="py-3 px-4 text-right">월 납입금</th>
+                <th class="py-3 px-4 text-right">편집</th>
               </tr>
             </thead>
             <tbody id="installmentTableBody" class="text-sm"></tbody>
@@ -880,7 +935,7 @@
         </button>
       </div>
 
-      <form id="penForm" onsubmit="savePen(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
+      <form id="penForm" novalidate onsubmit="savePen(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
         <input type="hidden" id="penId" />
 
         <!-- 제조사 & 펜 이름 + 한정판 체크 -->
@@ -1132,7 +1187,7 @@
         </button>
       </div>
 
-      <form id="inkForm" onsubmit="saveInk(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
+      <form id="inkForm" novalidate onsubmit="saveInk(event)" class="p-6 overflow-y-auto space-y-5 text-sm">
         <input type="hidden" id="inkId" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1299,6 +1354,59 @@
     </div>
   </div>
 
+  <!-- ========================================================= -->
+  <!-- MODAL 5: JSON 데이터 직접 편집 & JSON 파일 생성 모달 -->
+  <!-- ========================================================= -->
+  <div id="jsonEditorModal" class="hidden fixed inset-0 z-[65] flex items-center justify-center p-4 bg-slate-950/55 backdrop-blur-xs">
+    <div class="th-modal rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b th-border th-surface-soft flex items-center justify-between gap-3">
+        <div>
+          <h2 class="font-serif text-lg font-bold th-text">JSON 데이터 편집기 &amp; 파일 생성</h2>
+          <p class="text-[11px] th-text-muted">만년필·잉크 전체 데이터를 JSON으로 직접 수정하고 즉시 저장하거나 <code>.json</code> 파일로 내보낼 수 있습니다.</p>
+        </div>
+        <button type="button" onclick="closeJsonEditorModal()" class="p-2 rounded-xl th-text-muted hover:opacity-75 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 상태 & 빠른 도구 바 -->
+      <div class="px-6 py-3 border-b th-border flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="jsonEditorValidBadge" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            유효한 JSON
+          </span>
+          <span id="jsonEditorStats" class="text-[11px] font-mono th-text-muted">만년필 0 · 잉크 0</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button type="button" onclick="formatJsonEditor()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold th-btn-soft transition">자동 정렬</button>
+          <button type="button" onclick="copyJsonEditor()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold th-btn-soft transition">전체 복사</button>
+          <button type="button" onclick="document.getElementById('jsonEditorFileInput').click()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold th-btn-soft transition">파일 열기</button>
+          <input type="file" id="jsonEditorFileInput" accept=".json,application/json" class="hidden" onchange="loadFileIntoJsonEditor(event)" />
+        </div>
+      </div>
+
+      <!-- 오류 안내 배너 -->
+      <div id="jsonEditorError" class="hidden mx-6 mt-3 px-3.5 py-2.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium"></div>
+
+      <!-- 편집 텍스트 영역 -->
+      <div class="p-6 flex-1 min-h-0 flex flex-col">
+        <textarea id="jsonEditorTextarea" spellcheck="false" oninput="validateJsonEditorLive()" class="th-input-soft w-full flex-1 min-h-[300px] sm:min-h-[380px] p-4 rounded-xl font-mono text-xs leading-relaxed resize-none" placeholder='{"pens": [], "inks": []}'></textarea>
+      </div>
+
+      <!-- 하단 액션 -->
+      <div class="px-6 py-4 border-t th-border th-surface-soft flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onclick="downloadJsonFromEditor()" class="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold th-badge-soft hover:opacity-90 rounded-xl transition">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span>JSON 파일 생성 (.json 다운로드)</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeJsonEditorModal()" class="px-4 py-2.5 text-xs font-semibold th-btn-soft rounded-xl transition">닫기</button>
+          <button type="button" onclick="applyJsonEditor()" class="px-5 py-2.5 text-xs font-semibold th-btn-primary rounded-xl shadow-sm transition">편집 내용 적용 (저장)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 토스트 컨테이너 -->
   <div id="toastContainer" class="fixed bottom-5 right-5 z-[80] flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
 
@@ -1307,7 +1415,7 @@
     // 1. 상수 및 전역 상태
     // =========================================================================
     const STORAGE_KEY = 'fountain_pen_ink_archive_v3';
-    const LEGACY_STORAGE_KEY = 'fountain_pen_ink_archive_v2';
+    const LEGACY_STORAGE_KEYS = ['fountain_pen_ink_archive_v2', 'fountain_pen_ink_archive_v1'];
     const THEME_STORAGE_KEY = 'fountain_pen_ink_theme_v1';
     const VALID_THEMES = ['classic', 'lavender-blue', 'blue-black'];
 
@@ -1323,6 +1431,8 @@
     let inkFilter = 'all';
     let financeFilter = 'all'; // 'all' | 'ongoing' | 'completed'
     let inkViewMode = 'card';  // 'card' | 'table'
+    let penQuickEditMode = false;
+    let inkQuickEditMode = false;
 
     // 모달 임시 폼 상태
     let formPenNibMaterial = 'steel'; // 'steel' | 'gold'
@@ -1396,10 +1506,10 @@
 
       try {
         localStorage.setItem(THEME_STORAGE_KEY, target);
-      } catch (e) { /* 저장 무시 */ }
+      } catch (e) { /* 무시 */ }
 
       if (!silent) {
-        showToast(`'${THEME_LABELS[target]}' 테마 시안이 적용되었습니다.`);
+        showToast(`'${THEME_LABELS[target]}' 테마가 적용되었습니다.`);
       }
     }
 
@@ -1546,6 +1656,16 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    // onclick 문자열 인자용 안전 이스케이프
+    function escJsArg(str) {
+      return String(str === null || str === undefined ? '' : str)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
     }
 
     function uid(prefix) {
@@ -1798,7 +1918,7 @@
     }
 
     /**
-     * 구버전 데이터(v2)가 있을 경우 누락 필드를 안전하게 보강
+     * 구버전 데이터(v1/v2)가 있을 경우 누락 필드를 안전하게 보강
      */
     function normalizeLoadedData(parsed) {
       const sampleDefaults = createSampleData();
@@ -1815,7 +1935,10 @@
           caseInfo: def ? def.caseInfo : '',
           isLimited: def ? def.isLimited : false,
           notes: def ? def.notes : '',
-          ...p
+          ...p,
+          id: p.id || uid('pen'),
+          isLimited: Boolean(p.isLimited !== undefined ? p.isLimited : (def ? def.isLimited : false)),
+          inked: Boolean(p.inked)
         };
       });
 
@@ -1823,7 +1946,8 @@
         const def = sampleInkMap[i.id];
         return {
           purchasePlace: def ? def.purchasePlace : '',
-          ...i
+          ...i,
+          id: i.id || uid('ink')
         };
       });
 
@@ -1832,7 +1956,13 @@
 
     function loadData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+        let raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          for (const legacyKey of LEGACY_STORAGE_KEYS) {
+            raw = localStorage.getItem(legacyKey);
+            if (raw) break;
+          }
+        }
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Array.isArray(parsed.pens) && Array.isArray(parsed.inks)) {
@@ -2108,23 +2238,86 @@
         const rowBg = pen._cleaning.needsCleaning ? 'bg-red-50/35' : '';
         const nibLabel = formatNibLabel(pen.nibMaterial, pen.nibSize, pen.nibKarat);
         const nibBadgeClass = pen.nibMaterial === 'gold' ? 'nib-badge-gold' : 'nib-badge-steel';
+        const safeId = escJsArg(pen.id);
+        const safeHex = /^#[0-9A-Fa-f]{6}$/i.test(pen.colorHex || '') ? pen.colorHex : '#5A67B3';
+
+        if (penQuickEditMode) {
+          return `
+            <tr class="th-row quick-edit-row">
+              <td class="py-3 px-3 align-top min-w-[230px] max-w-[260px] space-y-1.5">
+                <div class="grid grid-cols-2 gap-1.5">
+                  <input type="text" value="${esc(pen.brand)}" placeholder="제조사" oninput="updatePenFieldInline('${safeId}', 'brand', this.value)" class="th-input px-2 py-1 text-[11px] font-semibold rounded-lg w-full" />
+                  <input type="text" value="${esc(pen.name)}" placeholder="펜 이름" oninput="updatePenFieldInline('${safeId}', 'name', this.value)" class="th-input px-2 py-1 text-xs font-bold rounded-lg w-full" />
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <input type="color" value="${esc(safeHex)}" onchange="updatePenFieldInline('${safeId}', 'colorHex', this.value)" class="w-6 h-6 rounded-md cursor-pointer shrink-0" title="펜 색상" />
+                  <input type="text" value="${esc(pen.colorName)}" placeholder="펜 색상명" oninput="updatePenFieldInline('${safeId}', 'colorName', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg flex-1 min-w-0" />
+                  <label class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-1 rounded-md border th-border bg-white cursor-pointer shrink-0">
+                    <input type="checkbox" ${pen.isLimited ? 'checked' : ''} onchange="updatePenFieldInline('${safeId}', 'isLimited', this.checked)" class="accent-[#142238]" />
+                    <span>한정</span>
+                  </label>
+                </div>
+                <textarea rows="2" placeholder="펜 비고 (상태, 필기감)" oninput="updatePenFieldInline('${safeId}', 'notes', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg w-full resize-y leading-snug">${esc(pen.notes)}</textarea>
+              </td>
+              <td class="py-3 px-2 align-top min-w-[130px] space-y-1.5">
+                <select onchange="updatePenFieldInline('${safeId}', 'nibMaterial', this.value, true)" class="th-input px-2 py-1 text-[11px] font-semibold rounded-lg w-full">
+                  <option value="steel" ${pen.nibMaterial !== 'gold' ? 'selected' : ''}>스틸닙</option>
+                  <option value="gold" ${pen.nibMaterial === 'gold' ? 'selected' : ''}>골드닙</option>
+                </select>
+                <div class="grid grid-cols-2 gap-1">
+                  <input type="text" value="${esc(pen.nibSize)}" placeholder="굵기(F)" oninput="updatePenFieldInline('${safeId}', 'nibSize', this.value)" class="th-input px-2 py-1 text-[11px] font-mono rounded-lg w-full" />
+                  <input type="text" value="${esc(pen.nibKarat)}" placeholder="14k" ${pen.nibMaterial !== 'gold' ? 'disabled' : ''} oninput="updatePenFieldInline('${safeId}', 'nibKarat', this.value)" class="th-input px-2 py-1 text-[11px] font-mono rounded-lg w-full disabled:opacity-40" />
+                </div>
+              </td>
+              <td class="py-3 px-3 align-top min-w-[165px] space-y-1.5">
+                <input type="date" value="${esc(pen.purchaseDate)}" onchange="updatePenFieldInline('${safeId}', 'purchaseDate', this.value, true)" class="th-input px-2 py-1 text-[11px] font-mono rounded-lg w-full" />
+                <input type="text" inputmode="numeric" value="${pen.price ? Number(pen.price).toLocaleString('ko-KR') : ''}" placeholder="구입가" oninput="formatPriceInput(this); updatePenFieldInline('${safeId}', 'price', parsePriceValue(this.value))" class="th-input px-2 py-1 text-xs font-mono text-right rounded-lg w-full" />
+                <input type="text" value="${esc(pen.purchasePlace)}" placeholder="구매처" oninput="updatePenFieldInline('${safeId}', 'purchasePlace', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg w-full" />
+              </td>
+              <td class="py-3 px-2 align-top min-w-[130px] space-y-1.5">
+                <input type="text" value="${esc(pen.warranty)}" placeholder="보증서 (있음/없음)" oninput="updatePenFieldInline('${safeId}', 'warranty', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg w-full" />
+                <input type="text" value="${esc(pen.caseInfo)}" placeholder="케이스 (있음/없음)" oninput="updatePenFieldInline('${safeId}', 'caseInfo', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg w-full" />
+              </td>
+              <td class="py-3 px-2 text-center align-top whitespace-nowrap">
+                <select onchange="updatePenFieldInline('${safeId}', 'status', this.value, true)" class="th-input px-2 py-1 text-[11px] font-semibold rounded-lg">
+                  <option value="사용중" ${pen.status === '사용중' ? 'selected' : ''}>사용중</option>
+                  <option value="보관중" ${pen.status === '보관중' ? 'selected' : ''}>보관중</option>
+                  <option value="잘안씀" ${pen.status === '잘안씀' ? 'selected' : ''}>잘안씀</option>
+                </select>
+              </td>
+              <td class="py-3 px-3 align-top min-w-[200px]">
+                ${inkHtml}
+                <button type="button" onclick="openPenModal('${safeId}')" class="mt-2 px-2.5 py-1 rounded-lg text-[10px] font-semibold th-btn-soft transition">할부 · 잉입 상세 수정</button>
+              </td>
+              <td class="py-3 px-3 text-right align-top whitespace-nowrap">
+                <div class="inline-flex flex-col items-end gap-1">
+                  <button type="button" onclick="openPenModal('${safeId}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-btn-primary transition">상세 수정</button>
+                  <button type="button" onclick="confirmDeletePen('${safeId}')" class="px-2.5 py-1 rounded-xl text-[11px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition">삭제</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
 
         return `
           <tr class="th-row ${rowBg}">
             <td class="py-4 px-4 align-top max-w-[260px]">
-              <div class="text-[11px] font-semibold th-text-muted tracking-wide uppercase">${esc(pen.brand)}</div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-semibold th-text-muted tracking-wide uppercase truncate">${esc(pen.brand)}</span>
+                <button type="button" onclick="openPenModal('${safeId}')" title="수정" class="text-[10px] font-semibold th-accent-text hover:underline shrink-0">편집</button>
+              </div>
               <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                <span class="font-bold th-text text-sm">${esc(pen.name)}</span>
+                <button type="button" onclick="openPenModal('${safeId}')" title="클릭하여 만년필 정보 수정" class="font-bold th-text hover:underline text-left text-sm cursor-pointer">${esc(pen.name)}</button>
                 ${pen.isLimited ? getLimitedButtonHTML() : ''}
               </div>
               ${pen.colorName ? `
                 <div class="flex items-center gap-1.5 mt-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full border border-black/15 shrink-0" style="background-color: ${esc(pen.colorHex || '#334155')};"></span>
+                  <span class="w-2.5 h-2.5 rounded-full border border-black/15 shrink-0" style="background-color: ${esc(safeHex)};"></span>
                   <span class="text-xs th-text-muted">${esc(pen.colorName)}</span>
                 </div>
               ` : ''}
               ${pen.notes ? `
-                <div class="mt-2 px-2.5 py-1.5 rounded-lg th-surface-soft border th-border text-[11px] th-text-sec leading-relaxed">
+                <div class="note-text-box mt-2 px-2.5 py-1.5 rounded-lg th-surface-soft border th-border text-[11px] th-text-sec leading-relaxed max-w-[240px]">
                   ${esc(pen.notes)}
                 </div>
               ` : ''}
@@ -2152,22 +2345,27 @@
               </div>
             </td>
             <td class="py-4 px-3 text-center align-top whitespace-nowrap">
-              ${getStatusBadgeHTML(pen.status)}
+              <select aria-label="상태 빠른 변경" onchange="updatePenFieldInline('${safeId}', 'status', this.value, true)" class="th-input-soft px-2 py-1 rounded-full text-[11px] font-semibold cursor-pointer">
+                <option value="사용중" ${pen.status === '사용중' ? 'selected' : ''}>사용중</option>
+                <option value="보관중" ${pen.status === '보관중' ? 'selected' : ''}>보관중</option>
+                <option value="잘안씀" ${pen.status === '잘안씀' ? 'selected' : ''}>잘안씀</option>
+              </select>
             </td>
             <td class="py-4 px-4 align-top min-w-[235px]">
               ${inkHtml}
             </td>
             <td class="py-4 px-4 text-right align-top whitespace-nowrap">
-              <div class="inline-flex items-center justify-end gap-1">
+              <div class="inline-flex items-center justify-end gap-1.5">
                 ${pen.inked ? `
-                  <button type="button" onclick="confirmCleanPen('${pen.id}')" title="세척 완료 처리" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white hover:bg-red-700' : 'th-btn-soft'} transition">
+                  <button type="button" onclick="confirmCleanPen('${safeId}')" title="세척 완료 처리" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white hover:bg-red-700' : 'th-btn-soft'} transition">
                     세척완료
                   </button>
                 ` : ''}
-                <button type="button" onclick="openPenModal('${pen.id}')" title="수정" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <button type="button" onclick="openPenModal('${safeId}')" title="수정" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-badge-soft hover:opacity-85 transition">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  <span>수정</span>
                 </button>
-                <button type="button" onclick="confirmDeletePen('${pen.id}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
+                <button type="button" onclick="confirmDeletePen('${safeId}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                 </button>
               </div>
@@ -2182,6 +2380,54 @@
         const cleanStyle = pen._cleaning.needsCleaning ? 'border-color: #FCA5A5;' : '';
         const nibLabel = formatNibLabel(pen.nibMaterial, pen.nibSize, pen.nibKarat);
         const nibBadgeClass = pen.nibMaterial === 'gold' ? 'nib-badge-gold' : 'nib-badge-steel';
+        const safeId = escJsArg(pen.id);
+        const safeHex = /^#[0-9A-Fa-f]{6}$/i.test(pen.colorHex || '') ? pen.colorHex : '#5A67B3';
+
+        if (penQuickEditMode) {
+          return `
+            <div class="th-card rounded-2xl p-4 space-y-2.5 quick-edit-row">
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" value="${esc(pen.brand)}" placeholder="제조사" oninput="updatePenFieldInline('${safeId}', 'brand', this.value)" class="th-input px-2.5 py-1.5 text-xs font-semibold rounded-xl" />
+                <input type="text" value="${esc(pen.name)}" placeholder="펜 이름" oninput="updatePenFieldInline('${safeId}', 'name', this.value)" class="th-input px-2.5 py-1.5 text-xs font-bold rounded-xl" />
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <select onchange="updatePenFieldInline('${safeId}', 'nibMaterial', this.value, true)" class="th-input px-2 py-1.5 text-xs rounded-xl">
+                  <option value="steel" ${pen.nibMaterial !== 'gold' ? 'selected' : ''}>스틸닙</option>
+                  <option value="gold" ${pen.nibMaterial === 'gold' ? 'selected' : ''}>골드닙</option>
+                </select>
+                <input type="text" value="${esc(pen.nibSize)}" placeholder="굵기" oninput="updatePenFieldInline('${safeId}', 'nibSize', this.value)" class="th-input px-2 py-1.5 text-xs font-mono rounded-xl" />
+                <input type="text" value="${esc(pen.nibKarat)}" placeholder="14k" ${pen.nibMaterial !== 'gold' ? 'disabled' : ''} oninput="updatePenFieldInline('${safeId}', 'nibKarat', this.value)" class="th-input px-2 py-1.5 text-xs font-mono rounded-xl disabled:opacity-40" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="date" value="${esc(pen.purchaseDate)}" onchange="updatePenFieldInline('${safeId}', 'purchaseDate', this.value, true)" class="th-input px-2 py-1.5 text-xs font-mono rounded-xl" />
+                <input type="text" inputmode="numeric" value="${pen.price ? Number(pen.price).toLocaleString('ko-KR') : ''}" placeholder="구입가" oninput="formatPriceInput(this); updatePenFieldInline('${safeId}', 'price', parsePriceValue(this.value))" class="th-input px-2 py-1.5 text-xs font-mono text-right rounded-xl" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" value="${esc(pen.purchasePlace)}" placeholder="구매처" oninput="updatePenFieldInline('${safeId}', 'purchasePlace', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-xl" />
+                <select onchange="updatePenFieldInline('${safeId}', 'status', this.value, true)" class="th-input px-2 py-1.5 text-xs font-semibold rounded-xl">
+                  <option value="사용중" ${pen.status === '사용중' ? 'selected' : ''}>사용중</option>
+                  <option value="보관중" ${pen.status === '보관중' ? 'selected' : ''}>보관중</option>
+                  <option value="잘안씀" ${pen.status === '잘안씀' ? 'selected' : ''}>잘안씀</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" value="${esc(pen.warranty)}" placeholder="보증서" oninput="updatePenFieldInline('${safeId}', 'warranty', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-xl" />
+                <input type="text" value="${esc(pen.caseInfo)}" placeholder="케이스" oninput="updatePenFieldInline('${safeId}', 'caseInfo', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-xl" />
+              </div>
+              <textarea rows="2" placeholder="펜 비고" oninput="updatePenFieldInline('${safeId}', 'notes', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-xl w-full">${esc(pen.notes)}</textarea>
+              <div class="flex items-center justify-between pt-1">
+                <label class="inline-flex items-center gap-1.5 text-xs font-semibold th-text cursor-pointer">
+                  <input type="checkbox" ${pen.isLimited ? 'checked' : ''} onchange="updatePenFieldInline('${safeId}', 'isLimited', this.checked)" class="accent-[#142238]" />
+                  <span>한정판</span>
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openPenModal('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold th-btn-primary">상세 수정</button>
+                  <button type="button" onclick="confirmDeletePen('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 bg-red-50">삭제</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
 
         return `
           <div class="th-card rounded-2xl p-4 space-y-3" style="${cleanStyle}">
@@ -2192,12 +2438,12 @@
                   <span class="px-2 py-0.5 rounded-md ${nibBadgeClass} text-[11px] font-bold font-mono">${esc(nibLabel)}</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                  <h3 class="font-bold th-text text-base">${esc(pen.name)}</h3>
+                  <button type="button" onclick="openPenModal('${safeId}')" class="font-bold th-text hover:underline text-left text-base">${esc(pen.name)}</button>
                   ${pen.isLimited ? getLimitedButtonHTML() : ''}
                 </div>
                 ${pen.colorName ? `
                   <div class="flex items-center gap-1.5 mt-1">
-                    <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background-color: ${esc(pen.colorHex || '#334155')};"></span>
+                    <span class="w-2.5 h-2.5 rounded-full border border-black/15" style="background-color: ${esc(safeHex)};"></span>
                     <span class="text-xs th-text-muted">${esc(pen.colorName)}</span>
                   </div>
                 ` : ''}
@@ -2222,7 +2468,7 @@
             </div>
 
             ${pen.notes ? `
-              <div class="px-3 py-2 rounded-xl th-surface-soft border th-border text-xs th-text-sec leading-relaxed">
+              <div class="note-text-box px-3 py-2 rounded-xl th-surface-soft border th-border text-xs th-text-sec leading-relaxed">
                 <span class="text-[10px] font-bold th-text-muted block mb-0.5">펜 비고</span>
                 ${esc(pen.notes)}
               </div>
@@ -2235,10 +2481,10 @@
 
             <div class="flex items-center justify-end gap-2 pt-1">
               ${pen.inked ? `
-                <button type="button" onclick="confirmCleanPen('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white' : 'th-btn-soft'}">세척완료</button>
+                <button type="button" onclick="confirmCleanPen('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${pen._cleaning.needsCleaning ? 'bg-red-600 text-white' : 'th-btn-soft'}">세척완료</button>
               ` : ''}
-              <button type="button" onclick="openPenModal('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold th-btn-soft">수정</button>
-              <button type="button" onclick="confirmDeletePen('${pen.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 bg-red-50">삭제</button>
+              <button type="button" onclick="openPenModal('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold th-badge-soft">수정</button>
+              <button type="button" onclick="confirmDeletePen('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 bg-red-50">삭제</button>
             </div>
           </div>
         `;
@@ -2326,7 +2572,40 @@
 
         cardGrid.innerHTML = list.map(ink => {
           const usedPens = getInkedPensForInk(ink);
-          const hex = ink.colorHex || '#5E72B8';
+          const hex = /^#[0-9A-Fa-f]{6}$/i.test(ink.colorHex || '') ? ink.colorHex : '#5E72B8';
+          const safeId = escJsArg(ink.id);
+
+          if (inkQuickEditMode) {
+            return `
+              <div class="th-card rounded-2xl p-4 space-y-2.5 quick-edit-row">
+                <div class="flex items-center gap-2">
+                  <input type="color" value="${esc(hex)}" onchange="updateInkFieldInline('${safeId}', 'colorHex', this.value, true)" class="w-9 h-9 rounded-xl cursor-pointer shrink-0" />
+                  <div class="flex-1 grid grid-cols-2 gap-1.5">
+                    <input type="text" value="${esc(ink.brand)}" placeholder="잉크회사" oninput="updateInkFieldInline('${safeId}', 'brand', this.value)" class="th-input px-2.5 py-1.5 text-xs font-semibold rounded-lg" />
+                    <input type="text" value="${esc(ink.name)}" placeholder="잉크명" oninput="updateInkFieldInline('${safeId}', 'name', this.value)" class="th-input px-2.5 py-1.5 text-xs font-bold rounded-lg" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-1.5">
+                  <input type="text" value="${esc(ink.colorName)}" placeholder="색상명" oninput="updateInkFieldInline('${safeId}', 'colorName', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-lg" />
+                  <select onchange="updateInkFieldInline('${safeId}', 'status', this.value, true)" class="th-input px-2 py-1.5 text-xs font-semibold rounded-lg">
+                    <option value="사용중" ${ink.status === '사용중' ? 'selected' : ''}>사용중</option>
+                    <option value="보관중" ${ink.status === '보관중' ? 'selected' : ''}>보관중</option>
+                    <option value="잘안씀" ${ink.status === '잘안씀' ? 'selected' : ''}>잘안씀</option>
+                  </select>
+                </div>
+                <input type="text" value="${esc(ink.colorDesc)}" placeholder="발색 설명 / 메모" oninput="updateInkFieldInline('${safeId}', 'colorDesc', this.value)" class="th-input px-2.5 py-1.5 text-xs rounded-lg w-full" />
+                <div class="grid grid-cols-3 gap-1.5">
+                  <input type="date" value="${esc(ink.purchaseDate)}" onchange="updateInkFieldInline('${safeId}', 'purchaseDate', this.value, true)" class="th-input px-2 py-1.5 text-[11px] font-mono rounded-lg" />
+                  <input type="text" inputmode="numeric" value="${ink.price ? Number(ink.price).toLocaleString('ko-KR') : ''}" placeholder="구입가" oninput="formatPriceInput(this); updateInkFieldInline('${safeId}', 'price', parsePriceValue(this.value))" class="th-input px-2 py-1.5 text-xs font-mono text-right rounded-lg" />
+                  <input type="text" value="${esc(ink.purchasePlace)}" placeholder="구매처" oninput="updateInkFieldInline('${safeId}', 'purchasePlace', this.value)" class="th-input px-2 py-1.5 text-xs rounded-lg" />
+                </div>
+                <div class="flex items-center justify-end gap-1.5 pt-1 border-t th-border">
+                  <button type="button" onclick="openInkModal('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold th-btn-primary">상세 수정</button>
+                  <button type="button" onclick="confirmDeleteInk('${safeId}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-red-600 bg-red-50">삭제</button>
+                </div>
+              </div>
+            `;
+          }
 
           return `
             <div class="th-card rounded-2xl overflow-hidden flex flex-col justify-between transition">
@@ -2344,7 +2623,7 @@
                 <div class="p-4 space-y-2.5">
                   <div>
                     <div class="text-[11px] font-semibold th-text-muted uppercase tracking-wide">${esc(ink.brand)}</div>
-                    <h3 class="text-base font-bold th-text mt-0.5">${esc(ink.name)}</h3>
+                    <button type="button" onclick="openInkModal('${safeId}')" class="text-base font-bold th-text hover:underline text-left mt-0.5 cursor-pointer">${esc(ink.name)}</button>
                   </div>
 
                   <div class="flex items-center gap-2 text-xs th-text-sec">
@@ -2376,11 +2655,12 @@
                   </div>
                   ${getPaymentBadgeHTML(ink)}
                 </div>
-                <div class="flex items-center gap-1 shrink-0">
-                  <button type="button" onclick="openInkModal('${ink.id}')" title="수정" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button type="button" onclick="openInkModal('${safeId}')" title="수정" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-badge-soft hover:opacity-85 transition">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <span>수정</span>
                   </button>
-                  <button type="button" onclick="confirmDeleteInk('${ink.id}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
+                  <button type="button" onclick="confirmDeleteInk('${safeId}')" title="삭제" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                   </button>
                 </div>
@@ -2394,7 +2674,56 @@
 
         tbody.innerHTML = list.map(ink => {
           const usedPens = getInkedPensForInk(ink);
-          const hex = ink.colorHex || '#5E72B8';
+          const hex = /^#[0-9A-Fa-f]{6}$/i.test(ink.colorHex || '') ? ink.colorHex : '#5E72B8';
+          const safeId = escJsArg(ink.id);
+
+          if (inkQuickEditMode) {
+            return `
+              <tr class="th-row quick-edit-row">
+                <td class="py-3 px-3 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <input type="color" value="${esc(hex)}" onchange="updateInkFieldInline('${safeId}', 'colorHex', this.value, true)" class="w-8 h-8 rounded-lg cursor-pointer shrink-0" />
+                    <input type="text" value="${esc(ink.colorName)}" placeholder="색상명" oninput="updateInkFieldInline('${safeId}', 'colorName', this.value)" class="th-input px-2 py-1 text-xs rounded-lg w-28" />
+                  </div>
+                </td>
+                <td class="py-3 px-3 space-y-1.5 min-w-[210px]">
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <input type="text" value="${esc(ink.brand)}" placeholder="제조사" oninput="updateInkFieldInline('${safeId}', 'brand', this.value)" class="th-input px-2 py-1 text-xs font-semibold rounded-lg" />
+                    <input type="text" value="${esc(ink.name)}" placeholder="잉크명" oninput="updateInkFieldInline('${safeId}', 'name', this.value)" class="th-input px-2 py-1 text-xs font-bold rounded-lg" />
+                  </div>
+                  <input type="text" value="${esc(ink.colorDesc)}" placeholder="발색 설명" oninput="updateInkFieldInline('${safeId}', 'colorDesc', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg w-full" />
+                </td>
+                <td class="py-3 px-3 space-y-1.5 min-w-[165px]">
+                  <input type="date" value="${esc(ink.purchaseDate)}" onchange="updateInkFieldInline('${safeId}', 'purchaseDate', this.value, true)" class="th-input px-2 py-1 text-[11px] font-mono rounded-lg w-full" />
+                  <div class="grid grid-cols-2 gap-1">
+                    <input type="text" inputmode="numeric" value="${ink.price ? Number(ink.price).toLocaleString('ko-KR') : ''}" placeholder="구입가" oninput="formatPriceInput(this); updateInkFieldInline('${safeId}', 'price', parsePriceValue(this.value))" class="th-input px-2 py-1 text-xs font-mono text-right rounded-lg" />
+                    <input type="text" value="${esc(ink.purchasePlace)}" placeholder="구매처" oninput="updateInkFieldInline('${safeId}', 'purchasePlace', this.value)" class="th-input px-2 py-1 text-[11px] rounded-lg" />
+                  </div>
+                </td>
+                <td class="py-3 px-2 text-center whitespace-nowrap">
+                  <select onchange="updateInkFieldInline('${safeId}', 'status', this.value, true)" class="th-input px-2 py-1 text-xs font-semibold rounded-lg">
+                    <option value="사용중" ${ink.status === '사용중' ? 'selected' : ''}>사용중</option>
+                    <option value="보관중" ${ink.status === '보관중' ? 'selected' : ''}>보관중</option>
+                    <option value="잘안씀" ${ink.status === '잘안씀' ? 'selected' : ''}>잘안씀</option>
+                  </select>
+                </td>
+                <td class="py-3 px-3">
+                  ${usedPens.length > 0
+                    ? usedPens.map(p => `<div class="text-xs th-text font-medium">• ${esc(p.brand)} ${esc(p.name)}</div>`).join('')
+                    : `<span class="text-xs th-text-muted opacity-60">-</span>`
+                  }
+                </td>
+                <td class="py-3 px-3 text-right whitespace-nowrap">
+                  <div class="inline-flex items-center gap-1.5">
+                    <button type="button" onclick="openInkModal('${safeId}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-btn-primary transition">상세 수정</button>
+                    <button type="button" onclick="confirmDeleteInk('${safeId}')" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition" title="삭제">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
 
           return `
             <tr class="th-row">
@@ -2411,7 +2740,7 @@
               </td>
               <td class="py-3.5 px-4">
                 <div class="text-[11px] font-semibold th-text-muted uppercase">${esc(ink.brand)}</div>
-                <div class="text-sm font-bold th-text">${esc(ink.name)}</div>
+                <button type="button" onclick="openInkModal('${safeId}')" class="text-sm font-bold th-text hover:underline text-left cursor-pointer">${esc(ink.name)}</button>
                 ${ink.colorDesc ? `<div class="text-[11px] th-text-muted mt-0.5 max-w-xs truncate">${esc(ink.colorDesc)}</div>` : ''}
               </td>
               <td class="py-3.5 px-4 whitespace-nowrap">
@@ -2430,11 +2759,12 @@
                 }
               </td>
               <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                <div class="inline-flex items-center gap-1">
-                  <button type="button" onclick="openInkModal('${ink.id}')" class="p-1.5 rounded-xl th-text-muted hover:opacity-75 transition" title="수정">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <div class="inline-flex items-center gap-1.5">
+                  <button type="button" onclick="openInkModal('${safeId}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-badge-soft hover:opacity-85 transition" title="수정">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <span>수정</span>
                   </button>
-                  <button type="button" onclick="confirmDeleteInk('${ink.id}')" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition" title="삭제">
+                  <button type="button" onclick="confirmDeleteInk('${safeId}')" class="p-1.5 rounded-xl th-text-muted hover:text-red-600 transition" title="삭제">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                   </button>
                 </div>
@@ -2511,6 +2841,9 @@
           const catBadge = item._category === '만년필'
             ? 'th-btn-primary'
             : 'th-badge-soft';
+          const editFn = item._category === '만년필'
+            ? `openPenModal('${escJsArg(item.id)}')`
+            : `openInkModal('${escJsArg(item.id)}')`;
 
           const statusHtml = isDone
             ? `
@@ -2538,7 +2871,7 @@
               </td>
               <td class="py-3.5 px-4">
                 <div class="text-[11px] th-text-muted font-semibold">${esc(item.brand)}</div>
-                <div class="text-sm font-bold th-text">${esc(item.name)}</div>
+                <button type="button" onclick="${editFn}" class="text-sm font-bold th-text hover:underline text-left cursor-pointer">${esc(item.name)}</button>
               </td>
               <td class="py-3.5 px-4 whitespace-nowrap">
                 ${statusHtml}
@@ -2555,6 +2888,9 @@
                   ? `<span class="text-xs font-sans font-semibold text-emerald-700">완납 (₩0)</span>`
                   : `<span class="font-bold text-amber-700">${formatKRW(monthly)} / 월</span>`
                 }
+              </td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <button type="button" onclick="${editFn}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-semibold th-badge-soft hover:opacity-85 transition">수정</button>
               </td>
             </tr>
           `;
@@ -2657,6 +2993,20 @@
       renderInks();
     }
 
+    function setInkView(mode) {
+      inkViewMode = mode === 'table' ? 'table' : 'card';
+      const cardBtn = document.getElementById('inkViewBtn-card');
+      const tableBtn = document.getElementById('inkViewBtn-table');
+      if (inkViewMode === 'card') {
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+      } else {
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+      }
+      renderInks();
+    }
+
     function setFinanceFilter(filterVal) {
       financeFilter = filterVal;
       document.querySelectorAll('.fin-filter-btn').forEach(btn => {
@@ -2665,18 +3015,101 @@
       renderFinance();
     }
 
-    function setInkView(mode) {
-      inkViewMode = mode;
-      const cardBtn = document.getElementById('inkViewBtn-card');
-      const tableBtn = document.getElementById('inkViewBtn-table');
-      if (mode === 'card') {
-        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
-        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+    /**
+     * 만년필 빠른 수정 모드 전환 및 인라인 즉시 저장
+     */
+    function togglePenQuickEditMode(forceState) {
+      penQuickEditMode = typeof forceState === 'boolean' ? forceState : !penQuickEditMode;
+      const btn = document.getElementById('quickEditPenBtn');
+      const btnText = document.getElementById('quickEditPenBtnText');
+      const banner = document.getElementById('penQuickEditBanner');
+
+      if (penQuickEditMode) {
+        btn.className = 'th-btn-primary inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap';
+        btnText.textContent = '빠른 수정 완료';
+        banner.classList.remove('hidden');
       } else {
-        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white th-text shadow-xs transition flex items-center gap-1';
-        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium th-text-muted transition flex items-center gap-1';
+        btn.className = 'th-badge-soft inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap';
+        btnText.textContent = '빠른 수정 모드';
+        banner.classList.add('hidden');
+      }
+      renderPens();
+    }
+
+    function updatePenFieldInline(penId, field, value, shouldRerenderList = false) {
+      const pen = appData.pens.find(p => p.id === penId);
+      if (!pen) return;
+
+      if (field === 'nibKarat') {
+        pen.nibKarat = String(value || '').trim().toLowerCase();
+      } else if (field === 'nibMaterial') {
+        pen.nibMaterial = value === 'gold' ? 'gold' : 'steel';
+        if (pen.nibMaterial !== 'gold') pen.nibKarat = '';
+      } else if (field === 'price') {
+        pen.price = Number(value) || 0;
+      } else {
+        pen[field] = value;
+      }
+
+      saveData();
+      renderDashboard();
+      renderFinance();
+      if (shouldRerenderList) {
+        renderPens();
+      }
+    }
+
+    /**
+     * 잉크 빠른 수정 모드 전환 및 인라인 즉시 저장
+     */
+    function toggleInkQuickEditMode(forceState) {
+      inkQuickEditMode = typeof forceState === 'boolean' ? forceState : !inkQuickEditMode;
+      const btn = document.getElementById('quickEditInkBtn');
+      const btnText = document.getElementById('quickEditInkBtnText');
+      const banner = document.getElementById('inkQuickEditBanner');
+
+      if (inkQuickEditMode) {
+        btn.className = 'th-btn-primary inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shadow-xs transition whitespace-nowrap';
+        btnText.textContent = '빠른 수정 완료';
+        banner.classList.remove('hidden');
+      } else {
+        btn.className = 'th-badge-soft inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap';
+        btnText.textContent = '빠른 수정 모드';
+        banner.classList.add('hidden');
       }
       renderInks();
+    }
+
+    function updateInkFieldInline(inkId, field, value, shouldRerenderList = false) {
+      const ink = appData.inks.find(i => i.id === inkId);
+      if (!ink) return;
+
+      if (field === 'price') {
+        ink.price = Number(value) || 0;
+      } else if (field === 'colorHex') {
+        ink.colorHex = String(value || '#5E72B8').toUpperCase();
+      } else {
+        ink[field] = value;
+      }
+
+      // 잉크 이름/제조사/색상 수정 시 연동된 만년필 정보도 자동 동기화
+      if (field === 'brand' || field === 'name' || field === 'colorHex') {
+        appData.pens.forEach(p => {
+          if (p.linkedInkId === inkId) {
+            p.inkBrand = ink.brand;
+            p.inkName = ink.name;
+            p.inkColorHex = ink.colorHex;
+          }
+        });
+      }
+
+      saveData();
+      renderDashboard();
+      renderFinance();
+      if (shouldRerenderList) {
+        renderInks();
+        renderPens();
+      }
     }
 
     // =========================================================================
@@ -2704,7 +3137,7 @@
         document.getElementById('penName').value = pen.name || '';
         document.getElementById('penIsLimited').checked = Boolean(pen.isLimited);
         document.getElementById('penColorName').value = pen.colorName || '';
-        document.getElementById('penColorHex').value = pen.colorHex || '#2B3440';
+        document.getElementById('penColorHex').value = /^#[0-9A-Fa-f]{6}$/i.test(pen.colorHex || '') ? pen.colorHex : '#5A67B3';
         document.getElementById('penPurchaseDate').value = pen.purchaseDate || '';
         document.getElementById('penPrice').value = pen.price ? Number(pen.price).toLocaleString('ko-KR') : '';
         document.getElementById('penPurchasePlace').value = pen.purchasePlace || '';
@@ -2732,7 +3165,7 @@
         document.getElementById('penLinkedInkId').value = pen.linkedInkId || '';
         document.getElementById('penInkBrand').value = pen.inkBrand || '';
         document.getElementById('penInkName').value = pen.inkName || '';
-        document.getElementById('penInkColorHex').value = pen.inkColorHex || '#5E72B8';
+        document.getElementById('penInkColorHex').value = /^#[0-9A-Fa-f]{6}$/i.test(pen.inkColorHex || '') ? pen.inkColorHex : '#5E72B8';
       } else {
         document.getElementById('penModalTitle').textContent = '새 만년필 등록';
         document.getElementById('penPurchaseDate').value = getTodayStr();
@@ -3020,6 +3453,15 @@
     function savePen(e) {
       e.preventDefault();
       const id = document.getElementById('penId').value;
+      const brand = document.getElementById('penBrand').value.trim();
+      const name = document.getElementById('penName').value.trim();
+
+      if (!brand || !name) {
+        showToast('제조사와 펜 이름은 필수 입력 항목입니다.', 'error');
+        (!brand ? document.getElementById('penBrand') : document.getElementById('penName')).focus();
+        return;
+      }
+
       const nibSize = formPenNibType === 'custom'
         ? (document.getElementById('penCustomNib').value.trim() || '직접입력')
         : formPenNibType;
@@ -3028,8 +3470,9 @@
         ? document.getElementById('penNibKarat').value.trim().toLowerCase()
         : '';
 
+      const rawInstMonths = parseInt(document.getElementById('penInstMonths').value, 10);
       const instMonths = formPenPaymentType === 'installment'
-        ? (parseInt(document.getElementById('penInstMonths').value, 10) || 2)
+        ? (Number.isFinite(rawInstMonths) && rawInstMonths >= 2 ? Math.min(60, rawInstMonths) : 2)
         : null;
       const instCard = formPenPaymentType === 'installment'
         ? document.getElementById('penInstCard').value.trim()
@@ -3037,8 +3480,8 @@
 
       const penObj = {
         id: id || uid('pen'),
-        brand: document.getElementById('penBrand').value.trim(),
-        name: document.getElementById('penName').value.trim(),
+        brand,
+        name,
         isLimited: document.getElementById('penIsLimited').checked,
         nibMaterial: formPenNibMaterial,
         nibKarat,
@@ -3066,6 +3509,7 @@
       if (id) {
         const idx = appData.pens.findIndex(p => p.id === id);
         if (idx !== -1) appData.pens[idx] = penObj;
+        else appData.pens.unshift(penObj);
         showToast('만년필 정보가 수정되었습니다.');
       } else {
         appData.pens.unshift(penObj);
@@ -3145,7 +3589,7 @@
       }
 
       container.innerHTML = filtered.map(ink => `
-        <button type="button" onclick="pickInkForPen('${ink.id}')" class="w-full text-left p-3 rounded-xl border th-border hover:opacity-90 th-surface-soft transition flex items-center gap-3">
+        <button type="button" onclick="pickInkForPen('${escJsArg(ink.id)}')" class="w-full text-left p-3 rounded-xl border th-border hover:opacity-90 th-surface-soft transition flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl border border-black/15 shrink-0 shadow-inner" style="background-color: ${esc(ink.colorHex || '#5E72B8')};"></div>
           <div class="min-w-0 flex-1">
             <div class="text-[11px] font-semibold th-text-muted truncate">${esc(ink.brand)}</div>
@@ -3385,6 +3829,14 @@
     function saveInk(e) {
       e.preventDefault();
       const id = document.getElementById('inkId').value;
+      const brand = document.getElementById('inkBrand').value.trim();
+      const name = document.getElementById('inkName').value.trim();
+
+      if (!brand || !name) {
+        showToast('제조사와 잉크 이름은 필수 입력 항목입니다.', 'error');
+        (!brand ? document.getElementById('inkBrand') : document.getElementById('inkName')).focus();
+        return;
+      }
 
       let hexVal = document.getElementById('inkColorHexText').value.trim();
       if (hexVal && !hexVal.startsWith('#')) hexVal = '#' + hexVal;
@@ -3392,8 +3844,9 @@
         hexVal = document.getElementById('inkColorPicker').value || '#5E72B8';
       }
 
+      const rawInstMonths = parseInt(document.getElementById('inkInstMonths').value, 10);
       const instMonths = formInkPaymentType === 'installment'
-        ? (parseInt(document.getElementById('inkInstMonths').value, 10) || 2)
+        ? (Number.isFinite(rawInstMonths) && rawInstMonths >= 2 ? Math.min(60, rawInstMonths) : 2)
         : null;
       const instCard = formInkPaymentType === 'installment'
         ? document.getElementById('inkInstCard').value.trim()
@@ -3401,8 +3854,8 @@
 
       const inkObj = {
         id: id || uid('ink'),
-        brand: document.getElementById('inkBrand').value.trim(),
-        name: document.getElementById('inkName').value.trim(),
+        brand,
+        name,
         colorName: document.getElementById('inkColorName').value.trim(),
         colorHex: hexVal.toUpperCase(),
         colorDesc: document.getElementById('inkColorDesc').value.trim(),
@@ -3418,6 +3871,7 @@
       if (id) {
         const idx = appData.inks.findIndex(i => i.id === id);
         if (idx !== -1) appData.inks[idx] = inkObj;
+        else appData.inks.unshift(inkObj);
         appData.pens.forEach(p => {
           if (p.linkedInkId === id) {
             p.inkBrand = inkObj.brand;
@@ -3454,7 +3908,7 @@
     }
 
     // =========================================================================
-    // 14. JSON 백업 / 복원 / 샘플 초기화
+    // 14. JSON 데이터 직접 편집기 / JSON 파일 생성 / 복원 / 샘플 초기화
     // =========================================================================
 
     function toggleDataMenu(forceState) {
@@ -3466,8 +3920,139 @@
       }
     }
 
-    function exportJSON() {
-      const dataStr = JSON.stringify(appData, null, 2);
+    /**
+     * JSON 문자열 파싱 및 아카이브 스키마 검증
+     */
+    function parseAndValidateArchiveJson(rawText) {
+      let parsed;
+      try {
+        parsed = JSON.parse(rawText);
+      } catch (err) {
+        return { ok: false, error: `JSON 문법 오류: ${err.message}` };
+      }
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return { ok: false, error: '최상위 구조는 {"pens": [...], "inks": [...]} 객체여야 합니다.' };
+      }
+      if (!Array.isArray(parsed.pens) || !Array.isArray(parsed.inks)) {
+        return { ok: false, error: '"pens"와 "inks" 배열이 모두 포함되어야 합니다.' };
+      }
+      return { ok: true, data: parsed };
+    }
+
+    /**
+     * JSON 편집기 모달 열기
+     */
+    function openJsonEditorModal() {
+      const textarea = document.getElementById('jsonEditorTextarea');
+      textarea.value = JSON.stringify(appData, null, 2);
+      validateJsonEditorLive();
+      document.getElementById('jsonEditorModal').classList.remove('hidden');
+    }
+
+    function closeJsonEditorModal() {
+      document.getElementById('jsonEditorModal').classList.add('hidden');
+    }
+
+    /**
+     * JSON 편집 중 실시간 유효성 및 항목 수 검증
+     */
+    function validateJsonEditorLive() {
+      const raw = document.getElementById('jsonEditorTextarea').value;
+      const badge = document.getElementById('jsonEditorValidBadge');
+      const stats = document.getElementById('jsonEditorStats');
+      const errBox = document.getElementById('jsonEditorError');
+
+      const res = parseAndValidateArchiveJson(raw);
+      if (res.ok) {
+        badge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        badge.textContent = '유효한 JSON';
+        stats.textContent = `만년필 ${res.data.pens.length}자루 · 잉크 ${res.data.inks.length}병`;
+        errBox.classList.add('hidden');
+        errBox.textContent = '';
+      } else {
+        badge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-red-50 text-red-700 border border-red-200';
+        badge.textContent = '형식 오류';
+        stats.textContent = '저장 전 오류를 수정해 주세요';
+        errBox.classList.remove('hidden');
+        errBox.textContent = res.error;
+      }
+      return res;
+    }
+
+    function formatJsonEditor() {
+      const res = validateJsonEditorLive();
+      if (!res.ok) {
+        showToast('JSON 문법 오류를 먼저 수정해 주세요.', 'error');
+        return;
+      }
+      document.getElementById('jsonEditorTextarea').value = JSON.stringify(res.data, null, 2);
+      showToast('JSON 들여쓰기가 정리되었습니다.');
+    }
+
+    async function copyJsonEditor() {
+      const textarea = document.getElementById('jsonEditorTextarea');
+      const text = textarea.value;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          showToast('JSON 데이터가 클립보드에 복사되었습니다.');
+          return;
+        }
+      } catch (err) { /* 폴백 진행 */ }
+
+      textarea.focus();
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+      try {
+        const copied = document.execCommand('copy');
+        if (copied) {
+          showToast('JSON 데이터가 클립보드에 복사되었습니다.');
+        } else {
+          showToast('자동 복사에 실패했습니다. 텍스트를 직접 선택해 복사해 주세요.', 'error');
+        }
+      } catch (e) {
+        showToast('자동 복사에 실패했습니다. 텍스트를 직접 선택해 복사해 주세요.', 'error');
+      }
+    }
+
+    function loadFileIntoJsonEditor(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('jsonEditorTextarea').value = e.target.result || '';
+        const res = validateJsonEditorLive();
+        if (res.ok) {
+          showToast('파일을 편집기에 불러왔습니다. 확인 후 [편집 내용 적용]을 눌러주세요.');
+        } else {
+          showToast('파일 형식에 오류가 있습니다. 편집기에서 확인해 주세요.', 'error');
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    function applyJsonEditor() {
+      const res = validateJsonEditorLive();
+      if (!res.ok) {
+        showToast('JSON 오류를 수정한 뒤 다시 적용해 주세요.', 'error');
+        return;
+      }
+      const normalized = normalizeLoadedData(res.data);
+      // ID가 누락된 항목이 있으면 안전하게 자동 부여
+      normalized.pens = normalized.pens.map(p => ({ ...p, id: p.id || uid('pen') }));
+      normalized.inks = normalized.inks.map(i => ({ ...i, id: i.id || uid('ink') }));
+
+      appData = normalized;
+      saveData();
+      renderAll();
+      closeJsonEditorModal();
+      showToast(`JSON 편집 내용이 저장되었습니다. (펜 ${appData.pens.length}자루, 잉크 ${appData.inks.length}병)`);
+    }
+
+    function triggerJsonFileDownload(dataObj) {
+      const dataStr = JSON.stringify(dataObj, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -3476,8 +4061,22 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('JSON 백업 파일이 다운로드되었습니다.');
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function downloadJsonFromEditor() {
+      const res = validateJsonEditorLive();
+      if (!res.ok) {
+        showToast('유효한 JSON 형식일 때만 파일로 저장할 수 있습니다.', 'error');
+        return;
+      }
+      triggerJsonFileDownload(res.data);
+      showToast(`fountain_pen_archive_${getTodayStr()}.json 파일이 생성되었습니다.`);
+    }
+
+    function exportJSON() {
+      triggerJsonFileDownload(appData);
+      showToast(`fountain_pen_archive_${getTodayStr()}.json 파일이 생성되었습니다.`);
     }
 
     function importJSON(event) {
@@ -3492,8 +4091,10 @@
           }
           appData = normalizeLoadedData(parsed);
           saveData();
+          resetPenFilters();
+          setInkFilter('all');
           renderAll();
-          showToast(`백업 불러오기 완료 (펜 ${parsed.pens.length}자루, 잉크 ${parsed.inks.length}병)`);
+          showToast(`불러오기 완료 (펜 ${appData.pens.length}자루, 잉크 ${appData.inks.length}병) — 바로 수정할 수 있습니다.`);
         } catch (err) {
           showToast('올바른 JSON 백업 파일이 아닙니다.', 'error');
         } finally {
@@ -3594,6 +4195,8 @@
       if (e.key === 'Escape') {
         if (!document.getElementById('confirmModal').classList.contains('hidden')) {
           closeConfirmModal();
+        } else if (!document.getElementById('jsonEditorModal').classList.contains('hidden')) {
+          closeJsonEditorModal();
         } else if (!document.getElementById('inkPickerModal').classList.contains('hidden')) {
           closeInkPickerModal();
         } else if (!document.getElementById('penModal').classList.contains('hidden')) {
